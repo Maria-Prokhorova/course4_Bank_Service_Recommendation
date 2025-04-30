@@ -1,22 +1,28 @@
 package org.skypro.banking_service.controller;
 
-import org.skypro.banking_service.repository.RecommendationsRepository;
-import org.springframework.web.bind.annotation.*;
+import org.skypro.banking_service.dto.RecommendationResponse;
+import org.skypro.banking_service.service.RecommendationService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/recommendation")
 public class RecommendationController {
 
-    private final RecommendationsRepository repository;
+    private RecommendationService service;
 
-    public RecommendationController(RecommendationsRepository repository) {
-        this.repository = repository;
+    public RecommendationController(RecommendationService service) {
+        this.service = service;
     }
 
-    @GetMapping("/user_id")
-    public int findRecommendation(@RequestParam UUID id) {
-        return repository.getRandomTransactionAmount(id);
+    @GetMapping("/{userId}")
+    public ResponseEntity<RecommendationResponse> getRecommendations(@PathVariable UUID userId) {
+        return null;
     }
 }
