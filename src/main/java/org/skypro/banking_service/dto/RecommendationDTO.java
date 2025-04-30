@@ -1,6 +1,5 @@
 package org.skypro.banking_service.dto;
 
-import java.lang.invoke.StringConcatException;
 import java.util.UUID;
 
 public class RecommendationDTO {
