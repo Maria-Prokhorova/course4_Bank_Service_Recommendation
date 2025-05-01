@@ -1,7 +1,6 @@
 package org.skypro.banking_service.service.rules;
 
 import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.repository.ProductRepository;
 import org.skypro.banking_service.repository.RecommendationRepository;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +14,9 @@ import static org.skypro.banking_service.service.constants.ProductConstants.*;
 public class TopSavingRule implements RecommendationRule {
 
     private final RecommendationRepository recommendationRepository;
-    private final ProductRepository productRepository;
 
-    public TopSavingRule(RecommendationRepository recommendationRepository,
-                         ProductRepository productRepository) {
+    public TopSavingRule(RecommendationRepository recommendationRepository) {
         this.recommendationRepository = recommendationRepository;
-        this.productRepository = productRepository;
     }
 
     @Override
@@ -29,7 +25,6 @@ public class TopSavingRule implements RecommendationRule {
         if (isEligibleForTopSaving(userId)) {
             return buildRecommendationDto();
         }
-
         return Optional.empty();
     }
 
@@ -56,11 +51,10 @@ public class TopSavingRule implements RecommendationRule {
     }
 
     private Optional<RecommendationDto> buildRecommendationDto() {
-        return productRepository.findProductInfoById(PRODUCT_ID_TOP_SAVING)
-                .map(product -> new RecommendationDto(
-                        product.getId(),
-                        product.getName(),
-                        DESCRIPTION_TOP_SAVING
-                ));
+        return Optional.of(new RecommendationDto(
+                "TopSaving",
+                PRODUCT_ID_TOP_SAVING,
+                DESCRIPTION_TOP_SAVING
+        ));
     }
 }
