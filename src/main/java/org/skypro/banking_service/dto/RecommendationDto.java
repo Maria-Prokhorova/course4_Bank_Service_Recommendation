@@ -6,16 +6,14 @@ import lombok.Data;
 @Data
 public class RecommendationDto {
 
-    private String id;
     private String name;
+    private String id;
     private String text;
 
-    public RecommendationDto() {
-    }
 
-    public RecommendationDto(String id, String name, String text) {
-        this.id = id;
+    public RecommendationDto(String name, String id, String text) {
         this.name = name;
+        this.id = id;
         this.text = text;
     }
 }
