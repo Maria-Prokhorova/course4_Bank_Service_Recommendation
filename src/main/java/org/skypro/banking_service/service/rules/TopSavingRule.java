@@ -24,18 +24,13 @@ public class TopSavingRule implements RecommendationRule {
     }
 
     @Override
-    public Optional<RecommendationDto> checkOut(String userId) {
-        UUID uuid = parseUserId(userId);
+    public Optional<RecommendationDto> checkOut(UUID userId) {
 
-        if (isEligibleForTopSaving(uuid)) {
+        if (isEligibleForTopSaving(userId)) {
             return buildRecommendationDto();
         }
 
         return Optional.empty();
-    }
-
-    private UUID parseUserId(String userId) {
-        return UUID.fromString(userId);
     }
 
     private boolean isEligibleForTopSaving(UUID userId) {
