@@ -1,46 +1,22 @@
 package org.skypro.banking_service.service;
 
-import org.skypro.banking_service.repository.RecommendationRepository;
-import org.springframework.stereotype.Service;
+import org.skypro.banking_service.rulesystem.parameter.RuleParameters;
 
-import java.util.UUID;
-
-@Service
-public class RulesService {
-
-    private final RecommendationRepository repository;
-
-    public RulesService(RecommendationRepository repository) {
-        this.repository = repository;
-    }
-
+public interface RulesService {
     // Проверка на использование пользователем заданного продукта
-    public boolean isUsingProduct(UUID userId, String typeProduct) {
-        return repository.existsUserProductByType(userId, typeProduct);
-    }
+    boolean isUsingProduct(RuleParameters params);
 
     // Сумма пополнений продуктов с заданным типом больше установленного лимита.
-    public boolean isAmountDepositMoreLimit(UUID userId, String typeProduct, long sumLimit) {
-        return repository.findTotalDepositByUserIdAndProductType(userId, typeProduct) > sumLimit;
-    }
+    boolean isAmountDepositMoreLimit(RuleParameters params);
 
-    // Сумма пополнений по первому указанному продукту больше или равна указанного лимита.
-    // ИЛИ Сумма пополнений по второму указанному продуктам больше или равна указанного лимита.
-    public boolean isAmountSeveralDepositsMoreOrEqualsLimit(UUID userId, String typeProduct1, String typeProduct2, long sumLimit) {
-        long debitDeposits = repository.findTotalDepositByUserIdAndProductType(userId, typeProduct1);
-        long savingDeposits = repository.findTotalDepositByUserIdAndProductType(userId, typeProduct2);
-        return debitDeposits >= sumLimit || savingDeposits >= sumLimit;
-    }
+    /*Сумма пополнений по первому указанному продукту больше или равна указанного лимита.
+        ИЛИ Сумма пополнений по второму указанному продуктам больше или равна указанного лимита.*/
+    boolean isAmountSeveralDepositsMoreOrEqualsLimit(RuleParameters params);
 
     // Сумма трат по заданному продукту больше установленного лимита.
-    public boolean isAmountWithdrawMoreLimit(UUID userId, String typeProduct, long sumLimit) {
-        return repository.findTotalWithdrawByUserIdAndProductType(userId, typeProduct) > sumLimit;
-    }
+    boolean isAmountWithdrawMoreLimit(RuleParameters params);
 
-    // Сумма пополнений по всем продуктам заданного типа больше, чем сумма трат по всем продуктам заданного типа.
-    public boolean isAmountDepositsMoreThanWithdrawals(UUID userId, String typeProduct) {
-        long debitDeposits = repository.findTotalDepositByUserIdAndProductType(userId, typeProduct);
-        long debitWithdrawals = repository.findTotalWithdrawByUserIdAndProductType(userId, typeProduct);
-        return debitDeposits > debitWithdrawals;
-    }
+    /*Сумма пополнений по всем продуктам заданного типа больше, чем сумма трат по всем
+    продуктам заданного типа.*/
+    boolean isAmountDepositsMoreThanWithdrawals(RuleParameters params);
 }

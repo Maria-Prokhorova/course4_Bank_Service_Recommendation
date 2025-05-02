@@ -10,6 +10,8 @@ public class RecommendationDto {
     private String id;
     private String text;
 
+    public RecommendationDto() {
+    }
 
     public RecommendationDto(String name, String id, String text) {
         this.name = name;
