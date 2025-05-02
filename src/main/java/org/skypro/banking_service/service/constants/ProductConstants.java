@@ -18,6 +18,10 @@ public class ProductConstants {
     public static final String PRODUCT_ID_INVEST_500 = "147f6a0f-3b91-413b-ab99-87f081d60d5a";
     public static final String PRODUCT_ID_SIMPLE_CREDIT = "ab138afb-f3ba-4a93-b74f-0fcee86d447f";
 
+    public static final String PRODUCT_NAME_TOP_SAVING = "Top Saving";
+    public static final String PRODUCT_NAME_INVEST_500 = "Invest 500";
+    public static final String PRODUCT_NAME_SIMPLE_CREDIT = "Простой кредит";
+
     public static final String DESCRIPTION_TOP_SAVING = """
                     Откройте свою собственную «Копилку» с нашим банком! «Копилка» — это уникальный банковский инструмент, 
                     который поможет вам легко и удобно накапливать деньги на важные цели. Больше никаких забытых чеков 
