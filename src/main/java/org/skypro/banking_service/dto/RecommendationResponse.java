@@ -1,10 +1,10 @@
 package org.skypro.banking_service.dto;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Data
@@ -15,10 +15,9 @@ public class RecommendationResponse {
     private UUID userId;
 
     @Schema(description = "Список рекомендаций")
-    private List<RecommendationDto> recommendations;
+    private List<Optional<RecommendationDto>> recommendations;
 
-
-    public RecommendationResponse(UUID userId, List<RecommendationDto> recommendations) {
+    public RecommendationResponse(UUID userId, List<Optional<RecommendationDto>> recommendations) {
         this.userId = userId;
         this.recommendations = recommendations;
     }
