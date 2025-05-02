@@ -50,7 +50,7 @@ public class Invest500Rule implements RecommendationRule {
     private RecommendationDto buildingRecommendationDto() {
         return new RecommendationDto(
                 PRODUCT_ID_INVEST_500,
-                "Invest 500",
+                PRODUCT_NAME_INVEST_500,
                 DESCRIPTION_INVEST_500
         );
     }
