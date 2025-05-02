@@ -8,7 +8,9 @@ import org.skypro.banking_service.service.RecommendationService;
 import org.skypro.banking_service.service.rules.RecommendationRule;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
@@ -23,14 +25,25 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     public RecommendationResponse getRecommendations(UUID userId) {
+        validateUserExists(userId);
+
+        List<RecommendationDto> recommendations = collectRecommendation(userId);
+
+        return new RecommendationResponse(userId, recommendations);
+    }
+
+    private void validateUserExists(UUID userId) {
         if (!repository.userExists(userId)) {
             throw new UserNotFoundException(userId);
-        } else {
-            List<Optional<RecommendationDto>> recommend = new ArrayList<>();
-            listRules.forEach(recommendationRule ->
-                    recommend.add(recommendationRule.checkOut(userId))
-            );
-            return new RecommendationResponse(userId, recommend);
         }
     }
+
+    private List<RecommendationDto> collectRecommendation(UUID userId) {
+        List<RecommendationDto> recommend = new ArrayList<>();
+        for (RecommendationRule rule : listRules) {
+            rule.checkOut(userId).ifPresent(recommend::add);
+        }
+        return recommend;
+    }
+
 }

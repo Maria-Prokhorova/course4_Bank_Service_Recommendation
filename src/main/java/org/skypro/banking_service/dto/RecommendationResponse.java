@@ -15,9 +15,9 @@ public class RecommendationResponse {
     private UUID userId;
 
     @Schema(description = "Список рекомендаций")
-    private List<Optional<RecommendationDto>> recommendations;
+    private List<RecommendationDto> recommendations;
 
-    public RecommendationResponse(UUID userId, List<Optional<RecommendationDto>> recommendations) {
+    public RecommendationResponse(UUID userId, List<RecommendationDto> recommendations) {
         this.userId = userId;
         this.recommendations = recommendations;
     }
