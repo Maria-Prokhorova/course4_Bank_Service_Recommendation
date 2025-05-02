@@ -14,8 +14,7 @@ public class SimpleCreditRule implements RecommendationRule {
 
     private final RecommendationRepository repository;
 
-
-    public SimpleCreditRule(RecommendationRepository repository, ProductRepository productRepository) {
+    public SimpleCreditRule(RecommendationRepository repository) {
         this.repository = repository;
     }
 
