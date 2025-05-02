@@ -1,7 +1,6 @@
 package org.skypro.banking_service.service.rules;
 
 import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.repository.ProductRepository;
 import org.skypro.banking_service.repository.RecommendationRepository;
 import org.springframework.stereotype.Component;
 

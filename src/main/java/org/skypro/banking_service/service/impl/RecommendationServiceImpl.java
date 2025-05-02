@@ -8,30 +8,29 @@ import org.skypro.banking_service.service.RecommendationService;
 import org.skypro.banking_service.service.rules.RecommendationRule;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
 
     private final RecommendationRepository repository;
-    private final RecommendationRule rules;
+    private final List<RecommendationRule> listRules;
 
-    public RecommendationServiceImpl(RecommendationRepository repository, RecommendationRule rules) {
+    public RecommendationServiceImpl(RecommendationRepository repository, List<RecommendationRule> listRules) {
         this.repository = repository;
-        this.rules = rules;
+        this.listRules = listRules;
     }
-
 
     @Override
     public RecommendationResponse getRecommendations(UUID userId) {
         if (!repository.userExists(userId)) {
             throw new UserNotFoundException(userId);
+        } else {
+            List<Optional<RecommendationDto>> recommend = new ArrayList<>();
+            listRules.forEach(recommendationRule ->
+                    recommend.add(recommendationRule.checkOut(userId))
+            );
+            return new RecommendationResponse(userId, recommend);
         }
-        else {
-            Optional<RecommendationDto> recommend = rules.checkOut(userId);
-            RecommendationResponse response = new RecommendationResponse(userId, recommend);
-        }
-        return null;
     }
 }
