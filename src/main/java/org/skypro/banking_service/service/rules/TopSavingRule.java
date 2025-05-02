@@ -52,7 +52,7 @@ public class TopSavingRule implements RecommendationRule {
 
     private Optional<RecommendationDto> buildRecommendationDto() {
         return Optional.of(new RecommendationDto(
-                "TopSaving",
+                PRODUCT_NAME_TOP_SAVING,
                 PRODUCT_ID_TOP_SAVING,
                 DESCRIPTION_TOP_SAVING
         ));

@@ -15,15 +15,14 @@ import java.util.UUID;
 @RequestMapping("/recommendation")
 public class RecommendationController {
 
-    private final RecommendationService recommendationService;
+    private RecommendationService service;
 
-    public RecommendationController(RecommendationService recommendationService) {
-        this.recommendationService = recommendationService;
+    public RecommendationController(RecommendationService service) {
+        this.service = service;
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<RecommendationResponse> getRecommendations(@PathVariable UUID userId) {
-        RecommendationResponse response = recommendationService.getRecommendations(userId);
-        return ResponseEntity.ok(response);
+        return null;
     }
 }
