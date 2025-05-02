@@ -4,8 +4,10 @@ import org.skypro.banking_service.dto.RecommendationDto;
 import org.skypro.banking_service.repository.RecommendationRepository;
 import org.springframework.stereotype.Component;
 
+
 import java.util.Optional;
 import java.util.UUID;
+import static org.skypro.banking_service.service.constants.ProductConstants.*;
 
 @Component
 public class Invest500Rule implements RecommendationRule {
@@ -16,21 +18,41 @@ public class Invest500Rule implements RecommendationRule {
         this.recommendationRepository = recommendationRepository;
     }
 
+    @Override
     public Optional<RecommendationDto> checkOut(UUID userId) {
-        RecommendationDto Invest500 = new RecommendationDto(
-                "147f6a0f-3b91-413b-ab99-87f081d60d5a",
-                "Invest 500",
-                "Откройте свой путь к успеху с индивидуальным инвестиционным счетом (ИИС) от нашего банка! Воспользуйтесь налоговыми льготами и начните инвестировать с умом. Пополните счет до конца года и получите выгоду в виде вычета на взнос в следующем налоговом периоде. Не упустите возможность разнообразить свой портфель, снизить риски и следить за актуальными рыночными тенденциями. Откройте ИИС сегодня и станьте ближе к финансовой независимости!"
-        );
-
-        boolean requirementFirst = recommendationRepository.existsUserProductByType(userId, "DEBIT");
-        boolean requirementSecond = !(recommendationRepository.existsUserProductByType(userId, "INVEST"));
-        boolean requirementThird = recommendationRepository.findTotalDepositByUserIdAndProductType(userId, "SAVING") > 1000;
-
-        if (requirementFirst && requirementSecond && requirementThird) {
-            return Optional.of(Invest500);
+        if (isEligibleForInvest500(userId)) {
+            return Optional.of(buildingRecommendationDto());
         }
         return Optional.empty();
+    }
+
+    private boolean isEligibleForInvest500(UUID userId) {
+        /**
+         * checking a set of rules for a product - Invest 500
+         */
+        return isUsingDebitProduct(userId)
+                && isNotUsingInvestProduct(userId)
+                && isAmountDepositMoreThanOneHundred(userId);
+    }
+
+    private boolean isUsingDebitProduct(UUID userId) {
+        return recommendationRepository.existsUserProductByType(userId, TYPE_DEBIT);
+    }
+
+    private boolean isNotUsingInvestProduct(UUID userId) {
+        return !(recommendationRepository.existsUserProductByType(userId, TYPE_INVEST));
+    }
+
+    private boolean isAmountDepositMoreThanOneHundred(UUID userId) {
+        return recommendationRepository.findTotalDepositByUserIdAndProductType(userId, TYPE_SAVING) > LIMIT_INVEST_500;
+    }
+
+    private RecommendationDto buildingRecommendationDto() {
+        return new RecommendationDto(
+                PRODUCT_ID_INVEST_500,
+                PRODUCT_NAME_INVEST_500,
+                DESCRIPTION_INVEST_500
+        );
     }
 
 }
