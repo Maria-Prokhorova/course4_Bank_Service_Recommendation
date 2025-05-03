@@ -3,9 +3,9 @@ package org.skypro.banking_service.serviceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.service.rules.Invest500Rule;
-import org.skypro.banking_service.service.rules.SimpleCreditRule;
-import org.skypro.banking_service.service.rules.TopSavingRule;
+import org.skypro.banking_service.rulesystem.rules.Invest500Rule;
+import org.skypro.banking_service.rulesystem.rules.SimpleCreditRule;
+import org.skypro.banking_service.rulesystem.rules.TopSavingRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.skypro.banking_service.service.constants.ProductConstants.*;
+import static org.skypro.banking_service.constants.ProductConstants.*;
 
 @SpringBootTest
 public class RulesTest {

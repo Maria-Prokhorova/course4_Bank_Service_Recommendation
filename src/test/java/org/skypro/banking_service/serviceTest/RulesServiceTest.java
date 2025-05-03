@@ -1,14 +1,14 @@
 package org.skypro.banking_service.serviceTest;
 
 import org.junit.jupiter.api.Test;
-import org.skypro.banking_service.repository.RecommendationRepository;
+import org.skypro.banking_service.rulesystem.parameter.RuleParameters;
 import org.skypro.banking_service.service.RulesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.UUID;
 
-import static org.skypro.banking_service.service.constants.ProductConstants.*;
+import static org.skypro.banking_service.constants.ProductConstants.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -22,8 +22,11 @@ public class RulesServiceTest {
     void shouldReturnTrueIfUserIsUsingProductDebit() {
         UUID userId = UUID.fromString("cd515076-5d8a-44be-930e-8d4fcb79f42d");
         assertThat(rulesService.isUsingProduct(
-                userId,
-                TYPE_DEBIT)).isTrue();
+                new RuleParameters(
+                        userId,
+                        TYPE_DEBIT,
+                        null,
+                        0))).isTrue();
     }
 
     @Test
@@ -31,9 +34,11 @@ public class RulesServiceTest {
         UUID userId = UUID.fromString("cd515076-5d8a-44be-930e-8d4fcb79f42d");
 
         assertThat(rulesService.isAmountDepositMoreLimit(
-                userId,
-                TYPE_SAVING,
-                LIMIT_INVEST_500)).isTrue();
+                new RuleParameters(
+                        userId,
+                        TYPE_SAVING,
+                        null,
+                        LIMIT_INVEST_500))).isTrue();
     }
 
     @Test
@@ -41,10 +46,11 @@ public class RulesServiceTest {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
         assertThat(rulesService.isAmountSeveralDepositsMoreOrEqualsLimit(
-                userId,
-                TYPE_DEBIT,
-                TYPE_SAVING,
-                LIMIT_TOP_SAVING)).isTrue();
+                new RuleParameters(
+                        userId,
+                        TYPE_DEBIT,
+                        TYPE_SAVING,
+                        0))).isTrue();
      }
 
     @Test
@@ -52,9 +58,11 @@ public class RulesServiceTest {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
         assertThat(rulesService.isAmountWithdrawMoreLimit(
-                userId,
-                TYPE_DEBIT,
-                LIMIT_SIMPLE_CREDIT)).isTrue();
+                new RuleParameters(
+                        userId,
+                        TYPE_DEBIT,
+                        null,
+                        LIMIT_SIMPLE_CREDIT))).isTrue();
     }
 
     @Test
@@ -62,7 +70,10 @@ public class RulesServiceTest {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
         assertThat(rulesService.isAmountDepositsMoreThanWithdrawals(
-                userId,
-                TYPE_DEBIT)).isTrue();
+                new RuleParameters(
+                        userId,
+                        TYPE_DEBIT,
+                        null,
+                        0))).isTrue();
     }
 }
