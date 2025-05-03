@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
-import static org.skypro.banking_service.service.constants.ProductConstants.*;
+import static org.skypro.banking_service.constants.ProductConstants.*;
 
 @Component
 public class Invest500Rule implements RecommendationRule {

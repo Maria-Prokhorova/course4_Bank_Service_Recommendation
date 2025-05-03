@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.UUID;
 
-import static org.skypro.banking_service.service.constants.ProductConstants.*;
+import static org.skypro.banking_service.constants.ProductConstants.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
