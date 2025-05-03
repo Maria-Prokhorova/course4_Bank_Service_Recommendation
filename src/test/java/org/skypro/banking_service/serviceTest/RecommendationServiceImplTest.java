@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.skypro.banking_service.constants.ProductConstants.*;
+import static org.skypro.banking_service.service.constants.ProductConstants.*;
 
 @SpringBootTest
 public class RecommendationServiceImplTest {
