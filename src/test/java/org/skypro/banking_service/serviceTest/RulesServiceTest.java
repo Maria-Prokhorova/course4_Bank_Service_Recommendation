@@ -17,16 +17,13 @@ public class RulesServiceTest {
     @Autowired
     private RulesService rulesService;
 
-
     @Test
     void shouldReturnTrueIfUserIsUsingProductDebit() {
         UUID userId = UUID.fromString("cd515076-5d8a-44be-930e-8d4fcb79f42d");
         assertThat(rulesService.isUsingProduct(
-                new RuleParameters(
+                RuleParameters.of (
                         userId,
-                        TYPE_DEBIT,
-                        null,
-                        0))).isTrue();
+                        TYPE_DEBIT))).isTrue();
     }
 
     @Test
@@ -34,10 +31,9 @@ public class RulesServiceTest {
         UUID userId = UUID.fromString("cd515076-5d8a-44be-930e-8d4fcb79f42d");
 
         assertThat(rulesService.isAmountDepositMoreLimit(
-                new RuleParameters(
+                RuleParameters.of(
                         userId,
                         TYPE_SAVING,
-                        null,
                         LIMIT_INVEST_500))).isTrue();
     }
 
@@ -46,11 +42,11 @@ public class RulesServiceTest {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
         assertThat(rulesService.isAmountSeveralDepositsMoreOrEqualsLimit(
-                new RuleParameters(
+                RuleParameters.of(
                         userId,
                         TYPE_DEBIT,
                         TYPE_SAVING,
-                        0))).isTrue();
+                        LIMIT_TOP_SAVING))).isTrue();
      }
 
     @Test
@@ -58,10 +54,9 @@ public class RulesServiceTest {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
         assertThat(rulesService.isAmountWithdrawMoreLimit(
-                new RuleParameters(
+                RuleParameters.of(
                         userId,
                         TYPE_DEBIT,
-                        null,
                         LIMIT_SIMPLE_CREDIT))).isTrue();
     }
 
@@ -70,10 +65,8 @@ public class RulesServiceTest {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
         assertThat(rulesService.isAmountDepositsMoreThanWithdrawals(
-                new RuleParameters(
+                RuleParameters.of(
                         userId,
-                        TYPE_DEBIT,
-                        null,
-                        0))).isTrue();
+                        TYPE_DEBIT))).isTrue();
     }
 }
