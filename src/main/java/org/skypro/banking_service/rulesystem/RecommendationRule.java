@@ -1,6 +1,5 @@
 package org.skypro.banking_service.rulesystem;
 
-
 import org.skypro.banking_service.dto.RecommendationDto;
 
 import java.util.Optional;
