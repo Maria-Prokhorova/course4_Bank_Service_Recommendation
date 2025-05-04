@@ -28,7 +28,7 @@ spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=none  
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect  
 
-### 3. Запуск приложения
+### 3. Запуск приложения.
 #### *Команды для сборки приложения*
 mvn clean package
 #### *Команда для запуска приложения*
