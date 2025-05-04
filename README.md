@@ -32,5 +32,10 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
 #### *Команды для сборки приложения*
 mvn clean package
 #### *Команда для запуска приложения*
-java -jar target/BankingServiceApplication.jar
+java -jar target/BankingServiceApplication.jar  
+
+### 4. Над проектом работали.  
+Прохорова Мария  
+Краснов Вячеслав  
+Тарадаев Евгений 
 
