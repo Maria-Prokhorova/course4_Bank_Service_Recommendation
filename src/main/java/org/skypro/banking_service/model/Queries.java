@@ -1,27 +1,16 @@
 package org.skypro.banking_service.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-@Entity
-public class Rules {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Queries {
 
     private String query;
     private String[] arguments;
     boolean negate;
 
-    public Rules(){
+    public Queries(){
 
     }
 
-    public Rules(Long id, String query, String[] arguments, boolean negate) {
-        this.id = id;
+    public Queries(String query, String[] arguments, boolean negate) {
         this.query = query;
         this.arguments = arguments;
         this.negate = negate;

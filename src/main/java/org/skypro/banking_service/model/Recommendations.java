@@ -17,17 +17,17 @@ public class Recommendations {
     private String productName;
     private UUID productID;
     private String productText;
-   // private Rules[] rule;
+    private Queries[] rule = new Queries[3];
 
     public Recommendations() {
     }
 
-    public Recommendations(Long id, String productName, UUID productID, String productText) {
+    public Recommendations(Long id, String productName, UUID productID, String productText, Queries[] rule) {
         this.id = id;
         this.productName = productName;
         this.productID = productID;
         this.productText = productText;
-       // this.rule = rule;
+        this.rule = rule;
     }
 
     public String getProductName() {
@@ -54,4 +54,11 @@ public class Recommendations {
         this.productText = productText;
     }
 
+    public Queries[] getRule() {
+        return rule;
+    }
+
+    public void setRule(Queries[] rule) {
+        this.rule = rule;
+    }
 }
