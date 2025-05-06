@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class RecommendationRepositoryImpl implements RecommendationRepository {
+public class UserTransactionRepositoryImpl implements UserTransactionRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public RecommendationRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public UserTransactionRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
