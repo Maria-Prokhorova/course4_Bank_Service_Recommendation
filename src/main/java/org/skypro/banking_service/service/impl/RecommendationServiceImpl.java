@@ -6,10 +6,10 @@ import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.model.DynamicRule;
 import org.skypro.banking_service.repository.UserTransactionRepository;
-import org.skypro.banking_service.rulesystem.dynasmicRuleSystem.condition.DynamicRuleEvaluator;
+import org.skypro.banking_service.ruleSystem.dynamicRuleSystem.condition.DynamicRuleEvaluator;
 import org.skypro.banking_service.service.DynamicRuleService;
 import org.skypro.banking_service.service.RecommendationService;
-import org.skypro.banking_service.rulesystem.staticReleSystem.RecommendationRule;
+import org.skypro.banking_service.ruleSystem.staticRuleSystem.RecommendationRule;
 import org.skypro.banking_service.mapper.DynamicRuleMapper;
 import org.springframework.stereotype.Service;
 

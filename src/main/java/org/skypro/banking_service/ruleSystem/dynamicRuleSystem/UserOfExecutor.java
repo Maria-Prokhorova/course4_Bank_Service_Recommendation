@@ -1,4 +1,4 @@
-package org.skypro.banking_service.rulesystem.dynasmicRuleSystem;
+package org.skypro.banking_service.ruleSystem.dynamicRuleSystem;
 
 import org.skypro.banking_service.repository.UserTransactionRepository;
 import org.springframework.stereotype.Component;
@@ -6,9 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
+import static org.skypro.banking_service.constants.DynamicRuleOfConstants.USER_OF;
+
 @Component
 public class UserOfExecutor implements ConditionExecutor {
-
     private final UserTransactionRepository repository;
 
     public UserOfExecutor(UserTransactionRepository repository) {
@@ -17,14 +18,16 @@ public class UserOfExecutor implements ConditionExecutor {
 
     @Override
     public boolean supports(String queryType) {
-        return "USER_OF".equalsIgnoreCase(queryType);
+        return USER_OF.equals(queryType);
     }
 
     @Override
     public boolean evaluate(UUID userId, List<String> args, boolean negate) {
-        String productType = args.get(0);
-        boolean result = repository.countTransactionsByUserIdAndProductType(userId, productType) > 0;
-        return negate ? !result : result;
+        if (userId == null || args == null || args.isEmpty()) {
+            throw new IllegalArgumentException("Invalid arguments");
+        }
+        boolean result = repository.existsUserProductByType(userId, args.get(0));
+        return negate != result;
     }
 }
 

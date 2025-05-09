@@ -1,4 +1,4 @@
-package org.skypro.banking_service.rulesystem.staticReleSystem;
+package org.skypro.banking_service.ruleSystem.staticRuleSystem;
 
 import org.skypro.banking_service.dto.RecommendationDto;
 

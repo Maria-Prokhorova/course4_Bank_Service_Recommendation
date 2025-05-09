@@ -1,4 +1,4 @@
-package org.skypro.banking_service.rulesystem.staticReleSystem.parameter;
+package org.skypro.banking_service.ruleSystem.staticRuleSystem.parameter;
 
 import java.util.UUID;
 

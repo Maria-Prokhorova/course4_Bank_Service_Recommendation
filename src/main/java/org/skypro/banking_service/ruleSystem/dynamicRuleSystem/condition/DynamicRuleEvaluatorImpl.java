@@ -1,8 +1,8 @@
-package org.skypro.banking_service.rulesystem.dynasmicRuleSystem.condition;
+package org.skypro.banking_service.ruleSystem.dynamicRuleSystem.condition;
 
 import org.skypro.banking_service.model.DynamicRule;
 import org.skypro.banking_service.model.RuleCondition;
-import org.skypro.banking_service.service.RuleQuery;
+import org.skypro.banking_service.ruleSystem.dynamicRuleSystem.RuleQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

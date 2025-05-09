@@ -1,4 +1,4 @@
-package org.skypro.banking_service.rulesystem.dynasmicRuleSystem.condition;
+package org.skypro.banking_service.ruleSystem.dynamicRuleSystem.condition;
 
 import org.skypro.banking_service.model.DynamicRule;
 

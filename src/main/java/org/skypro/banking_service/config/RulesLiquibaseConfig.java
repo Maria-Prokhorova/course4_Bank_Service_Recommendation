@@ -1,4 +1,3 @@
-/*
 package org.skypro.banking_service.config;
 
 import liquibase.integration.spring.SpringLiquibase;
@@ -19,4 +18,4 @@ public class RulesLiquibaseConfig {
         liquibase.setContexts("postgres");
         return liquibase;
     }
-}*/
+}
