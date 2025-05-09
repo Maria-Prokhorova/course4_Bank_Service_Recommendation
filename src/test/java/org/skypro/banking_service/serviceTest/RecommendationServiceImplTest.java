@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.dto.RecommendationDto;
 import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
-import org.skypro.banking_service.service.impl.RecommendationServiceImpl;
+import org.skypro.banking_service.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,13 +13,15 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.skypro.banking_service.constants.ProductConstants.*;
+import static org.skypro.banking_service.constants.ProductDescriptions.DESCRIPTION_TOP_SAVING;
+import static org.skypro.banking_service.constants.ProductIdConstants.PRODUCT_ID_TOP_SAVING;
+import static org.skypro.banking_service.constants.ProductNameConstants.PRODUCT_NAME_TOP_SAVING;
 
 @SpringBootTest
 public class RecommendationServiceImplTest {
 
     @Autowired
-    RecommendationServiceImpl recommendationService;
+    RecommendationService recommendationService;
 
     @Test
     void shouldReturnListOfRecommendations() {
@@ -46,7 +48,6 @@ public class RecommendationServiceImplTest {
     @Test
     void shouldReturnUserNotFoundException() {
         UUID userId = UUID.fromString("77a06779-2720-4dfb-9a06-336e8c861639");
-        //RecommendationResponse recommendations = recommendationService.getRecommendations(userId);
         assertThrows(UserNotFoundException.class, () -> recommendationService.getRecommendations(userId));
     }
 }

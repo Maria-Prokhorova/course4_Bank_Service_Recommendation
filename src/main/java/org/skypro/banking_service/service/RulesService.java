@@ -1,6 +1,6 @@
 package org.skypro.banking_service.service;
 
-import org.skypro.banking_service.rulesystem.parameter.RuleParameters;
+import org.skypro.banking_service.rulesystem.staticReleSystem.parameter.RuleParameters;
 
 public interface RulesService {
     // Проверка на использование пользователем заданного продукта

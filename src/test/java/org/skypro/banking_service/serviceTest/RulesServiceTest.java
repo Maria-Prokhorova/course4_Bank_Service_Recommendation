@@ -1,15 +1,17 @@
 package org.skypro.banking_service.serviceTest;
 
 import org.junit.jupiter.api.Test;
-import org.skypro.banking_service.rulesystem.parameter.RuleParameters;
+import org.skypro.banking_service.rulesystem.staticReleSystem.parameter.RuleParameters;
 import org.skypro.banking_service.service.RulesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.UUID;
 
-import static org.skypro.banking_service.constants.ProductConstants.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.skypro.banking_service.constants.ProductLimitConstants.*;
+import static org.skypro.banking_service.constants.ProductTypeConstants.TYPE_DEBIT;
+import static org.skypro.banking_service.constants.ProductTypeConstants.TYPE_SAVING;
 
 @SpringBootTest
 public class RulesServiceTest {
