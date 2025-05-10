@@ -21,7 +21,7 @@ public class DinamicRulesContoller {
         return dinamicRulesService.addRecommendationByRule(recommendation);
     }
 
-    @GetMapping()
+    @GetMapping
     public List<Recommendations> getAllRecommendations() {
         return dinamicRulesService.getAllRecommendationByRule();
     }

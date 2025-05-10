@@ -18,7 +18,7 @@ public class Queries {
     private String query;
 
     @Column(name = "arguments")
-    private List<String> arguments;
+    private String [] arguments;
 
     @Column(name = "negate")
     boolean negate;
@@ -31,7 +31,7 @@ public class Queries {
     public Queries() {
     }
 
-    public Queries(String query, List<String> arguments, boolean negate, Recommendations recommendations) {
+    public Queries(String query, String[] arguments, boolean negate, Recommendations recommendations) {
         this.query = query;
         this.arguments = arguments;
         this.negate = negate;
@@ -46,11 +46,11 @@ public class Queries {
         this.query = query;
     }
 
-    public List<String> getArguments() {
+    public String[] getArguments() {
         return arguments;
     }
 
-    public void setArguments(List<String> arguments) {
+    public void setArguments(String[] arguments) {
         this.arguments = arguments;
     }
 
