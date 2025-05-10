@@ -1,4 +1,4 @@
-package org.skypro.banking_service.repository;
+package org.skypro.banking_service.repositories.h2.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

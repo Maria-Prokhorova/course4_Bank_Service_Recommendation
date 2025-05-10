@@ -1,7 +1,7 @@
-package org.skypro.banking_service.repository.impl;
+package org.skypro.banking_service.repositories.impl;
 
 import org.junit.jupiter.api.Test;
-import org.skypro.banking_service.repository.RecommendationRepository;
+import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RecommendationRepositoryImplTest {
 
     @Autowired
-    private RecommendationRepository recommendationRepository;
+    private UserTransactionRepository recommendationRepository;
 
     // Получить типы продуктов, которыми пользуется пользователь
     @Test

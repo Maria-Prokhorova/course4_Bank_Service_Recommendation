@@ -1,6 +1,6 @@
 package org.skypro.banking_service.service.impl;
 
-import org.skypro.banking_service.repository.RecommendationRepository;
+import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
 import org.skypro.banking_service.rulesystem.parameter.RuleParameters;
 import org.skypro.banking_service.service.RulesService;
 import org.springframework.stereotype.Service;
@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class RulesServiceImpl implements RulesService {
 
-    private final RecommendationRepository repository;
+    private final UserTransactionRepositoryImpl repository;
 
-    public RulesServiceImpl(RecommendationRepository repository) {
+    public RulesServiceImpl(UserTransactionRepositoryImpl repository) {
         this.repository = repository;
     }
 
