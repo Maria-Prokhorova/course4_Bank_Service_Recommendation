@@ -24,6 +24,7 @@ public class Queries {
     boolean negate;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "recommendations_id")
     private Recommendations recommendations;
 

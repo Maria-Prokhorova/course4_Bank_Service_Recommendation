@@ -30,8 +30,8 @@ public class DinamicRulesServiceImpl implements DinamicRulesService {
 
     @Override
     public List<Recommendations> getAllRecommendationByRule() {
-        List<Recommendations> listReccomendation = recommendationsRepository.findAll();
-        return listReccomendation;
+        List<Recommendations> listRecommendation = recommendationsRepository.findAll();
+        return listRecommendation;
     }
 
     @Override
