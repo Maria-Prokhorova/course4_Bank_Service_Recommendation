@@ -6,6 +6,8 @@ import org.skypro.banking_service.model.Recommendations;
 import org.skypro.banking_service.repositories.postgres.repository.QueriesRepository;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationsRepository;
 import org.skypro.banking_service.service.DinamicRulesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.UUID;
 
 @Service
 public class DinamicRulesServiceImpl implements DinamicRulesService {
+
+    Logger logger = LoggerFactory.getLogger(DinamicRulesServiceImpl.class);
 
     private final RecommendationsRepository recommendationsRepository;
     private final QueriesRepository queriesRepository;
@@ -25,6 +29,10 @@ public class DinamicRulesServiceImpl implements DinamicRulesService {
 
     @Override
     public Recommendations addRecommendationByRule(Recommendations recommendation) {
+        for (Queries queries : recommendation.getRule()) {
+            queries.setRecommendations(recommendation);
+        }
+        logger.info("Was invoked method for create recommendation.");
         return recommendationsRepository.save(recommendation);
     }
 

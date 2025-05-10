@@ -2,6 +2,7 @@ package org.skypro.banking_service.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,11 +24,8 @@ public class Recommendations {
     @Column(name = "product_text")
     private String productText;
 
-    @OneToMany(mappedBy = "recommendations", cascade = CascadeType.ALL)
-    private List<Queries> rule;
-
-    public Recommendations() {
-    }
+    @OneToMany(mappedBy = "recommendations", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Queries> rule = new ArrayList<>();
 
     public Recommendations(UUID productId, String productName, String productText, List<Queries> rule) {
         this.productId = productId;
@@ -38,6 +36,17 @@ public class Recommendations {
         for (Queries q : rule) {
             q.setRecommendations(this);
         }
+    }
+
+    public Recommendations() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public UUID getProductId() {
