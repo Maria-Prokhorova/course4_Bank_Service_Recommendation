@@ -1,33 +1,51 @@
 package org.skypro.banking_service.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
+@Table(name = "recommendations")
 public class Recommendations {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "product_id")
+    private UUID productId;
+
+    @Column(name = "product_name")
     private String productName;
-    private UUID productID;
+
+    @Column(name = "product_text")
     private String productText;
-    private Queries[] rule = new Queries[3];
+
+    @OneToMany(mappedBy = "recommendations", cascade = CascadeType.ALL)
+    private List<Queries> rule;
 
     public Recommendations() {
     }
 
-    public Recommendations(Long id, String productName, UUID productID, String productText, Queries[] rule) {
-        this.id = id;
+    public Recommendations(UUID productId, String productName, String productText, List<Queries> rule) {
+        this.productId = productId;
         this.productName = productName;
-        this.productID = productID;
         this.productText = productText;
         this.rule = rule;
+
+        for (Queries q : rule) {
+            q.setRecommendations(this);
+        }
+    }
+
+    public UUID getProductId() {
+        return productId;
+    }
+
+    public void setProductId(UUID productId) {
+        this.productId = productId;
     }
 
     public String getProductName() {
@@ -38,14 +56,6 @@ public class Recommendations {
         this.productName = productName;
     }
 
-    public UUID getProductID() {
-        return productID;
-    }
-
-    public void setProductID(UUID productID) {
-        this.productID = productID;
-    }
-
     public String getProductText() {
         return productText;
     }
@@ -54,11 +64,34 @@ public class Recommendations {
         this.productText = productText;
     }
 
-    public Queries[] getRule() {
+    public List<Queries> getRule() {
         return rule;
     }
 
-    public void setRule(Queries[] rule) {
+    public void setRule(List<Queries> rule) {
         this.rule = rule;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Recommendations that = (Recommendations) o;
+        return Objects.equals(id, that.id) && Objects.equals(productId, that.productId) && Objects.equals(productName, that.productName) && Objects.equals(productText, that.productText) && Objects.equals(rule, that.rule);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, productId, productName, productText, rule);
+    }
+
+    @Override
+    public String toString() {
+        return "Recommendations{" +
+                "id=" + id +
+                ", productId=" + productId +
+                ", productName='" + productName + '\'' +
+                ", productText='" + productText + '\'' +
+                ", rule=" + rule +
+                '}';
     }
 }
