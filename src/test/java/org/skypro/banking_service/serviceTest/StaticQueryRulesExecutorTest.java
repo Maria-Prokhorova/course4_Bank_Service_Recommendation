@@ -2,7 +2,7 @@ package org.skypro.banking_service.serviceTest;
 
 import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.rule_system.static_rules.parameter.RuleParameters;
-import org.skypro.banking_service.service.static_system.RulesService;
+import org.skypro.banking_service.rule_system.static_rules.StaticQueryExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,15 +12,15 @@ import static org.skypro.banking_service.constants.ProductConstants.*;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-public class RulesServiceTest {
+public class StaticQueryRulesExecutorTest {
 
     @Autowired
-    private RulesService rulesService;
+    private StaticQueryExecutor staticQueryExecutor;
 
     @Test
     void shouldReturnTrueIfUserIsUsingProductDebit() {
         UUID userId = UUID.fromString("cd515076-5d8a-44be-930e-8d4fcb79f42d");
-        assertThat(rulesService.isUsingProduct(
+        assertThat(staticQueryExecutor.isUsingProduct(
                 RuleParameters.of (
                         userId,
                         TYPE_DEBIT))).isTrue();
@@ -30,7 +30,7 @@ public class RulesServiceTest {
     void shouldReturnTrueIfAmountDepositMoreLimit() {
         UUID userId = UUID.fromString("cd515076-5d8a-44be-930e-8d4fcb79f42d");
 
-        assertThat(rulesService.isAmountDepositMoreLimit(
+        assertThat(staticQueryExecutor.isAmountDepositMoreLimit(
                 RuleParameters.of(
                         userId,
                         TYPE_SAVING,
@@ -41,7 +41,7 @@ public class RulesServiceTest {
     void shouldReturnTrueIfAmountSeveralDepositsMoreOrEqualsLimit() {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
-        assertThat(rulesService.isAmountSeveralDepositsMoreOrEqualsLimit(
+        assertThat(staticQueryExecutor.isAmountSeveralDepositsMoreOrEqualsLimit(
                 RuleParameters.of(
                         userId,
                         TYPE_DEBIT,
@@ -53,7 +53,7 @@ public class RulesServiceTest {
     void shouldReturnTrueIfAmountWithdrawMoreLimit() {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
-        assertThat(rulesService.isAmountWithdrawMoreLimit(
+        assertThat(staticQueryExecutor.isAmountWithdrawMoreLimit(
                 RuleParameters.of(
                         userId,
                         TYPE_DEBIT,
@@ -64,7 +64,7 @@ public class RulesServiceTest {
     void shouldReturnTrueIfAmountDepositsMoreThanWithdrawals() {
         UUID userId = UUID.fromString("1f9b149c-6577-448a-bc94-16bea229b71a");
 
-        assertThat(rulesService.isAmountDepositsMoreThanWithdrawals(
+        assertThat(staticQueryExecutor.isAmountDepositsMoreThanWithdrawals(
                 RuleParameters.of(
                         userId,
                         TYPE_DEBIT))).isTrue();

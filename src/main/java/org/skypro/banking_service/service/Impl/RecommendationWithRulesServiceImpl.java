@@ -1,7 +1,7 @@
-package org.skypro.banking_service.service.dinamic_system;
+package org.skypro.banking_service.service;
 
 import org.skypro.banking_service.exception.RecommendationNotFoundException;
-import org.skypro.banking_service.model.Query;
+import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.repositories.postgreSQL.repository.QueryRepository;
 import org.skypro.banking_service.repositories.postgreSQL.repository.RecommendationRepository;
@@ -27,7 +27,7 @@ public class RecommendationWithRulesServiceImpl implements RecommendationWithRul
 
     @Override
     public Recommendation addRecommendationByRule(Recommendation recommendation) {
-        for (Query query : recommendation.getRule()) {
+        for (QueryRules query : recommendation.getRule()) {
             query.setRecommendations(recommendation);
         }
         logger.info("Was invoked method for create recommendation.");
@@ -44,7 +44,7 @@ public class RecommendationWithRulesServiceImpl implements RecommendationWithRul
     public void deleteRecommendationByRule(UUID productId) {
         Recommendation recommendation = validateId(productId);
 
-        for (Query rule : recommendation.getRule()) {
+        for (QueryRules rule : recommendation.getRule()) {
             queryRepository.delete(rule);
         }
         recommendationRepository.delete(recommendation);

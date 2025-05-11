@@ -25,15 +25,15 @@ public class Recommendation {
     private String productText;
 
     @OneToMany(mappedBy = "recommendations", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Query> rule = new ArrayList<>();
+    private List<QueryRules> rule = new ArrayList<>();
 
-    public Recommendation(UUID productId, String productName, String productText, List<Query> rule) {
+    public Recommendation(UUID productId, String productName, String productText, List<QueryRules> rule) {
         this.productId = productId;
         this.productName = productName;
         this.productText = productText;
         this.rule = rule;
 
-        for (Query q : rule) {
+        for (QueryRules q : rule) {
             q.setRecommendations(this);
         }
     }
@@ -73,11 +73,11 @@ public class Recommendation {
         this.productText = productText;
     }
 
-    public List<Query> getRule() {
+    public List<QueryRules> getRule() {
         return rule;
     }
 
-    public void setRule(List<Query> rule) {
+    public void setRule(List<QueryRules> rule) {
         this.rule = rule;
     }
 

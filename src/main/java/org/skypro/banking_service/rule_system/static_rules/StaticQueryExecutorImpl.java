@@ -1,15 +1,15 @@
-package org.skypro.banking_service.service.static_system;
+package org.skypro.banking_service.rule_system.static_rules;
 
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
 import org.skypro.banking_service.rule_system.static_rules.parameter.RuleParameters;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class RulesServiceImpl implements RulesService {
+@Component
+public class StaticQueryExecutorImpl implements StaticQueryExecutor {
 
     private final UserTransactionRepositoryImpl repository;
 
-    public RulesServiceImpl(UserTransactionRepositoryImpl repository) {
+    public StaticQueryExecutorImpl(UserTransactionRepositoryImpl repository) {
         this.repository = repository;
     }
 

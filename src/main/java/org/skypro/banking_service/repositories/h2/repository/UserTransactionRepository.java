@@ -11,6 +11,8 @@ public interface UserTransactionRepository {
 
     long findTotalWithdrawByUserIdAndProductType(UUID userId, String productType);
 
+    long findSumTransactionByUserIdAndProductType(UUID userId, String productType, String transactionType);
+
     boolean existsUserProductByType(UUID userId, String productType);
 
     boolean userExists(UUID userId);

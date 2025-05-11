@@ -1,6 +1,5 @@
 package org.skypro.banking_service.dto;
 
-
 import lombok.Data;
 
 @Data

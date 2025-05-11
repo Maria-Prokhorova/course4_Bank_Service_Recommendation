@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "queries")
-public class Query {
+public class QueryRules {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +27,10 @@ public class Query {
     @JoinColumn(name = "recommendations_id")
     private Recommendation recommendations;
 
-    public Query() {
+    public QueryRules() {
     }
 
-    public Query(String query, String[] arguments, boolean negate, Recommendation recommendations) {
+    public QueryRules(String query, String[] arguments, boolean negate, Recommendation recommendations) {
         this.query = query;
         this.arguments = arguments;
         this.negate = negate;
@@ -72,7 +72,7 @@ public class Query {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Query query = (Query) o;
+        QueryRules query = (QueryRules) o;
         return negate == query.negate && Objects.equals(id, query.id) && Objects.equals(this.query, query.query) && Objects.equals(arguments, query.arguments) && Objects.equals(recommendations, query.recommendations);
     }
 

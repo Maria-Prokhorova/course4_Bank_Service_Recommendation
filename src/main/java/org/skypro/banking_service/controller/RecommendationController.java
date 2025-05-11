@@ -1,7 +1,7 @@
 package org.skypro.banking_service.controller;
 
 import org.skypro.banking_service.dto.RecommendationResponse;
-import org.skypro.banking_service.service.static_system.RecommendationForClientService;
+import org.skypro.banking_service.service.RecommendationForClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

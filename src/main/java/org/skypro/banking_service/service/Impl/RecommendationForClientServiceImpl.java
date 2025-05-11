@@ -1,10 +1,11 @@
-package org.skypro.banking_service.service.static_system;
+package org.skypro.banking_service.service;
 
 import org.skypro.banking_service.dto.RecommendationDto;
 import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
-import org.skypro.banking_service.rule_system.static_rules.RecommendationRule;
+import org.skypro.banking_service.rule_system.dinamic_rules.DimanicRule;
+import org.skypro.banking_service.rule_system.static_rules.rules.StaticRule;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,11 +16,13 @@ import java.util.UUID;
 public class RecommendationForClientServiceImpl implements RecommendationForClientService {
 
     private final UserTransactionRepository repository;
-    private final List<RecommendationRule> listRules;
+    private final List<StaticRule> listStaticRules;
+    private final DimanicRule dimanicRule;
 
-    public RecommendationForClientServiceImpl(UserTransactionRepository repository, List<RecommendationRule> listRules) {
+    public RecommendationForClientServiceImpl(UserTransactionRepository repository, List<StaticRule> listStaticRules, DimanicRule dimanicRule) {
         this.repository = repository;
-        this.listRules = listRules;
+        this.listStaticRules = listStaticRules;
+        this.dimanicRule = dimanicRule;
     }
 
     /**
@@ -28,22 +31,31 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
      *
      * @param userId идентификатор клиента.
      * @return список рекомендаций по новым продуктам, которые подходят клиенту.
-     *      * В случае, если клиенту не подходит ни одни из продуктов, вернется пустой лист.
+     * * В случае, если клиенту не подходит ни одни из продуктов, вернется пустой лист.
      */
     @Override
     public RecommendationResponse getRecommendations(UUID userId) {
         validateUserExists(userId);
 
-        List<RecommendationDto> recommendations = collectRecommendation(userId);
+        List<RecommendationDto> recommendationsByStaticRules = collectRecommendation(userId);
+        System.out.println();
+        System.out.println(recommendationsByStaticRules);
+        System.out.println();
+        List<RecommendationDto> fullListRecommendation = new ArrayList<>(recommendationsByStaticRules);
+        List<RecommendationDto> recommendationsByDinamicRules = dimanicRule.checkOutDinamicRule(userId);
+        System.out.println();
+        System.out.println(recommendationsByDinamicRules);
+        System.out.println();
+        fullListRecommendation.addAll(recommendationsByDinamicRules);
 
-        return new RecommendationResponse(userId, recommendations);
+        return new RecommendationResponse(userId, fullListRecommendation);
     }
 
-    /** Внутренний метод для проверки валидности данных: проверяет существование клиента в БД.
-     *
-     * @throws UserNotFoundException если клиент с заданным Id в БД не найдет.
+    /**
+     * Внутренний метод для проверки валидности данных: проверяет существование клиента в БД.
      *
      * @param userId - идентификатор клиента.
+     * @throws UserNotFoundException если клиент с заданным Id в БД не найдет.
      */
     private void validateUserExists(UUID userId) {
         if (!repository.userExists(userId)) {
@@ -61,8 +73,8 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
      */
     private List<RecommendationDto> collectRecommendation(UUID userId) {
         List<RecommendationDto> recommend = new ArrayList<>();
-        for (RecommendationRule rule : listRules) {
-            rule.checkOut(userId).ifPresent(recommend::add);
+        for (StaticRule staticRule : listStaticRules) {
+            staticRule.checkOutStaticRule(userId).ifPresent(recommend::add);
         }
         return recommend;
     }

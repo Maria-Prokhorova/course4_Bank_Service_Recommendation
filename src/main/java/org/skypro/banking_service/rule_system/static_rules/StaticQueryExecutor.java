@@ -1,8 +1,8 @@
-package org.skypro.banking_service.service.static_system;
+package org.skypro.banking_service.rule_system.static_rules;
 
 import org.skypro.banking_service.rule_system.static_rules.parameter.RuleParameters;
 
-public interface RulesService {
+public interface StaticQueryExecutor {
     // Проверка на использование пользователем заданного продукта
     boolean isUsingProduct(RuleParameters params);
 

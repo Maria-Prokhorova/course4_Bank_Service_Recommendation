@@ -1,9 +1,8 @@
 package org.skypro.banking_service.rule_system.static_rules.rules;
 
 import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.rule_system.static_rules.RecommendationRule;
 import org.skypro.banking_service.rule_system.static_rules.parameter.RuleParameters;
-import org.skypro.banking_service.service.static_system.RulesServiceImpl;
+import org.skypro.banking_service.rule_system.static_rules.StaticQueryExecutorImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -12,16 +11,16 @@ import java.util.UUID;
 import static org.skypro.banking_service.constants.ProductConstants.*;
 
 @Component
-public class TopSavingRule implements RecommendationRule {
+public class StaticRuleTopSavingImp implements StaticRule {
 
-    private final RulesServiceImpl rulesService;
+    private final StaticQueryExecutorImpl rulesService;
 
-    public TopSavingRule(RulesServiceImpl rulesService) {
+    public StaticRuleTopSavingImp(StaticQueryExecutorImpl rulesService) {
         this.rulesService = rulesService;
     }
 
     @Override
-    public Optional<RecommendationDto> checkOut(UUID userId) {
+    public Optional<RecommendationDto> checkOutStaticRule(UUID userId) {
         if (isEligibleForTopSaving(userId)) {
             return buildRecommendationDto();
         }

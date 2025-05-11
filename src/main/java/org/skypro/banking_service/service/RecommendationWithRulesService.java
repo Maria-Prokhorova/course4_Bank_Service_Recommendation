@@ -1,4 +1,4 @@
-package org.skypro.banking_service.service.dinamic_system;
+package org.skypro.banking_service.service;
 
 import org.skypro.banking_service.model.Recommendation;
 

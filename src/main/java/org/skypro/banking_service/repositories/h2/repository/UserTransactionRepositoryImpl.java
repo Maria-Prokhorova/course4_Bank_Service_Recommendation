@@ -38,7 +38,7 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
                   AND t.type = 'DEPOSIT'
                 """;
         return jdbcTemplate.queryForObject(sql, Long.class, userId, productType);
-        // Вернет сумму пополнения дебетовой карты.
+        // Вернет сумму пополнения заданного продукта по карте.
     }
 
     @Override
@@ -52,7 +52,21 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
                   AND t.type = 'WITHDRAW'
                 """;
         return jdbcTemplate.queryForObject(sql, Long.class, userId, productType);
-        // Вернет сумму трат по кредитной карте
+        // Вернет сумму трат заданного продукта по карте.
+    }
+
+    @Override
+    public long findSumTransactionByUserIdAndProductType(UUID userId, String productType, String transactionType) {
+        String sql = """
+                SELECT COALESCE(SUM(t.amount), 0)
+                FROM transactions t
+                JOIN products p ON t.product_id = p.id
+                WHERE t.user_id = ?
+                  AND p.type = ?
+                  AND t.type = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, Long.class, userId, productType, transactionType);
+        // Вернет сумму трат заданного продукта по карте.
     }
 
     @Override
