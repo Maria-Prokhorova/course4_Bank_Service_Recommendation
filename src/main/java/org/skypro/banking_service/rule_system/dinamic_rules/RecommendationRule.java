@@ -1,4 +1,4 @@
-package org.skypro.banking_service.rulesystem;
+package org.skypro.banking_service.rule_system.dinamic_rules;
 
 import org.skypro.banking_service.dto.RecommendationDto;
 

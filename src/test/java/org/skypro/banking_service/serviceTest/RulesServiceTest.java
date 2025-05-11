@@ -1,8 +1,8 @@
 package org.skypro.banking_service.serviceTest;
 
 import org.junit.jupiter.api.Test;
-import org.skypro.banking_service.rulesystem.parameter.RuleParameters;
-import org.skypro.banking_service.service.RulesService;
+import org.skypro.banking_service.rule_system.dinamic_rules.parameter.RuleParameters;
+import org.skypro.banking_service.service.static_system.RulesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

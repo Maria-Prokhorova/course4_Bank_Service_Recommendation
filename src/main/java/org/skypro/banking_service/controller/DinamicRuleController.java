@@ -1,7 +1,7 @@
 package org.skypro.banking_service.controller;
 
-import org.skypro.banking_service.model.Recommendations;
-import org.skypro.banking_service.service.impl.DinamicRulesServiceImpl;
+import org.skypro.banking_service.model.Recommendation;
+import org.skypro.banking_service.service.dinamic_system.DinamicRuleServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,20 +9,20 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/rule")
-public class DinamicRulesContoller {
-    private final DinamicRulesServiceImpl dinamicRulesService;
+public class DinamicRuleController {
+    private final DinamicRuleServiceImpl dinamicRulesService;
 
-    public DinamicRulesContoller(DinamicRulesServiceImpl dinamicRulesService) {
+    public DinamicRuleController(DinamicRuleServiceImpl dinamicRulesService) {
         this.dinamicRulesService = dinamicRulesService;
     }
 
     @PostMapping
-    public Recommendations createRecommendation(@RequestBody Recommendations recommendation) {
+    public Recommendation createRecommendation(@RequestBody Recommendation recommendation) {
         return dinamicRulesService.addRecommendationByRule(recommendation);
     }
 
     @GetMapping
-    public List<Recommendations> getAllRecommendations() {
+    public List<Recommendation> getAllRecommendations() {
         return dinamicRulesService.getAllRecommendationByRule();
     }
 

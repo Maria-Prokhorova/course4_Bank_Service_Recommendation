@@ -1,6 +1,6 @@
-package org.skypro.banking_service.repositories.postgres.repository;
+package org.skypro.banking_service.repositories.postgreSQL.repository;
 
-import org.skypro.banking_service.model.Recommendations;
+import org.skypro.banking_service.model.Recommendation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface RecommendationsRepository extends JpaRepository <Recommendations, Long> {
+public interface RecommendationRepository extends JpaRepository <Recommendation, Long> {
 
     @Query(value = "SELECT * from recommendations WHERE product_id=?", nativeQuery = true)
-    Recommendations findByProductId(UUID productId);
+    Recommendation findByProductId(UUID productId);
 }

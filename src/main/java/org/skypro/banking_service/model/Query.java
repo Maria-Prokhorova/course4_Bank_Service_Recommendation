@@ -3,12 +3,11 @@ package org.skypro.banking_service.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "queries")
-public class Queries {
+public class Query {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +17,7 @@ public class Queries {
     private String query;
 
     @Column(name = "arguments")
-    private String [] arguments;
+    private String[] arguments;
 
     @Column(name = "negate")
     boolean negate;
@@ -26,12 +25,12 @@ public class Queries {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "recommendations_id")
-    private Recommendations recommendations;
+    private Recommendation recommendations;
 
-    public Queries() {
+    public Query() {
     }
 
-    public Queries(String query, String[] arguments, boolean negate, Recommendations recommendations) {
+    public Query(String query, String[] arguments, boolean negate, Recommendation recommendations) {
         this.query = query;
         this.arguments = arguments;
         this.negate = negate;
@@ -62,19 +61,19 @@ public class Queries {
         this.negate = negate;
     }
 
-    public Recommendations getRecommendations() {
+    public Recommendation getRecommendations() {
         return recommendations;
     }
 
-    public void setRecommendations(Recommendations recommendations) {
+    public void setRecommendations(Recommendation recommendations) {
         this.recommendations = recommendations;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Queries queries = (Queries) o;
-        return negate == queries.negate && Objects.equals(id, queries.id) && Objects.equals(query, queries.query) && Objects.equals(arguments, queries.arguments) && Objects.equals(recommendations, queries.recommendations);
+        Query query = (Query) o;
+        return negate == query.negate && Objects.equals(id, query.id) && Objects.equals(this.query, query.query) && Objects.equals(arguments, query.arguments) && Objects.equals(recommendations, query.recommendations);
     }
 
     @Override

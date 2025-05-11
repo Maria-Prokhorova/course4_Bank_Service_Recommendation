@@ -1,4 +1,4 @@
-package org.skypro.banking_service.rulesystem.parameter;
+package org.skypro.banking_service.rule_system.dinamic_rules.parameter;
 
 import java.util.UUID;
 

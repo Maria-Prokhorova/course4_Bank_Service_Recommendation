@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "recommendations")
-public class Recommendations {
+public class Recommendation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,20 +25,20 @@ public class Recommendations {
     private String productText;
 
     @OneToMany(mappedBy = "recommendations", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Queries> rule = new ArrayList<>();
+    private List<Query> rule = new ArrayList<>();
 
-    public Recommendations(UUID productId, String productName, String productText, List<Queries> rule) {
+    public Recommendation(UUID productId, String productName, String productText, List<Query> rule) {
         this.productId = productId;
         this.productName = productName;
         this.productText = productText;
         this.rule = rule;
 
-        for (Queries q : rule) {
+        for (Query q : rule) {
             q.setRecommendations(this);
         }
     }
 
-    public Recommendations() {
+    public Recommendation() {
     }
 
     public Long getId() {
@@ -73,18 +73,18 @@ public class Recommendations {
         this.productText = productText;
     }
 
-    public List<Queries> getRule() {
+    public List<Query> getRule() {
         return rule;
     }
 
-    public void setRule(List<Queries> rule) {
+    public void setRule(List<Query> rule) {
         this.rule = rule;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Recommendations that = (Recommendations) o;
+        Recommendation that = (Recommendation) o;
         return Objects.equals(id, that.id) && Objects.equals(productId, that.productId) && Objects.equals(productName, that.productName) && Objects.equals(productText, that.productText) && Objects.equals(rule, that.rule);
     }
 
