@@ -4,7 +4,7 @@ import org.skypro.banking_service.dto.RecommendationResponse;
 
 import java.util.UUID;
 
-public interface RecommendationByClientService {
+public interface RecommendationForClientService {
 
     RecommendationResponse getRecommendations(UUID userId);
 }

@@ -1,7 +1,7 @@
 package org.skypro.banking_service.service.static_system;
 
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
-import org.skypro.banking_service.rule_system.dinamic_rules.parameter.RuleParameters;
+import org.skypro.banking_service.rule_system.static_rules.parameter.RuleParameters;
 import org.springframework.stereotype.Service;
 
 @Service

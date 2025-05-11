@@ -4,7 +4,7 @@ import org.skypro.banking_service.dto.RecommendationDto;
 import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
-import org.skypro.banking_service.rule_system.dinamic_rules.RecommendationRule;
+import org.skypro.banking_service.rule_system.static_rules.RecommendationRule;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class RecommendationByClientServiceImpl implements RecommendationByClientService {
+public class RecommendationForClientServiceImpl implements RecommendationForClientService {
 
     private final UserTransactionRepository repository;
     private final List<RecommendationRule> listRules;
 
-    public RecommendationByClientServiceImpl(UserTransactionRepository repository, List<RecommendationRule> listRules) {
+    public RecommendationForClientServiceImpl(UserTransactionRepository repository, List<RecommendationRule> listRules) {
         this.repository = repository;
         this.listRules = listRules;
     }

@@ -1,8 +1,8 @@
-package org.skypro.banking_service.rule_system.dinamic_rules.rules;
+package org.skypro.banking_service.rule_system.static_rules.rules;
 
 import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.rule_system.dinamic_rules.RecommendationRule;
-import org.skypro.banking_service.rule_system.dinamic_rules.parameter.RuleParameters;
+import org.skypro.banking_service.rule_system.static_rules.RecommendationRule;
+import org.skypro.banking_service.rule_system.static_rules.parameter.RuleParameters;
 import org.skypro.banking_service.service.static_system.RulesServiceImpl;
 import org.springframework.stereotype.Component;
 

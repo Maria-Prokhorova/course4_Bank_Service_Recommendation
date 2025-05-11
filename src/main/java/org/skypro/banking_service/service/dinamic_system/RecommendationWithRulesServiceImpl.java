@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class DinamicRuleServiceImpl implements DinamicRuleService {
+public class RecommendationWithRulesServiceImpl implements RecommendationWithRulesService {
 
-    Logger logger = LoggerFactory.getLogger(DinamicRuleServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(RecommendationWithRulesServiceImpl.class);
 
     private final RecommendationRepository recommendationRepository;
     private final QueryRepository queryRepository;
 
-    public DinamicRuleServiceImpl(RecommendationRepository ruleRepository, QueryRepository queryRepository) {
+    public RecommendationWithRulesServiceImpl(RecommendationRepository ruleRepository, QueryRepository queryRepository) {
         this.recommendationRepository = ruleRepository;
         this.queryRepository = queryRepository;
     }

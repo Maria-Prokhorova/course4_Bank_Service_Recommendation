@@ -5,7 +5,7 @@ import org.skypro.banking_service.model.Recommendation;
 import java.util.List;
 import java.util.UUID;
 
-public interface DinamicRuleService {
+public interface RecommendationWithRulesService {
 
     Recommendation addRecommendationByRule(Recommendation recommendation);
 
