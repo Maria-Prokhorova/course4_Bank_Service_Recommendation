@@ -3,6 +3,7 @@ package org.skypro.banking_service.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,11 +15,13 @@ public class Queries {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "query")
+    @Column(name = "query", columnDefinition = "TEXT")
     private String query;
 
-    @Column(name = "arguments")
-    private String [] arguments;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "query_arguments", joinColumns = @JoinColumn(name = "query_id", referencedColumnName = "id"))
+    @Column(name = "argument")
+    private List<String> arguments;
 
     @Column(name = "negate")
     boolean negate;
@@ -31,7 +34,7 @@ public class Queries {
     public Queries() {
     }
 
-    public Queries(String query, String[] arguments, boolean negate, Recommendations recommendations) {
+    public Queries(String query, List<String> arguments, boolean negate, Recommendations recommendations) {
         this.query = query;
         this.arguments = arguments;
         this.negate = negate;
@@ -46,11 +49,11 @@ public class Queries {
         this.query = query;
     }
 
-    public String[] getArguments() {
+    public List<String> getArguments() {
         return arguments;
     }
 
-    public void setArguments(String[] arguments) {
+    public void setArguments(List<String> arguments) {
         this.arguments = arguments;
     }
 
@@ -74,11 +77,12 @@ public class Queries {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Queries queries = (Queries) o;
-        return negate == queries.negate && Objects.equals(id, queries.id) && Objects.equals(query, queries.query) && Objects.equals(arguments, queries.arguments) && Objects.equals(recommendations, queries.recommendations);
+        return Objects.equals(id, queries.id) && Objects.equals(query, queries.query) && Objects.equals(arguments, queries.arguments) && Objects.equals(recommendations, queries.recommendations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, query, arguments, negate, recommendations);
+        return Objects.hash(id, query, arguments);
     }
 }
+
