@@ -1,9 +1,12 @@
 package org.skypro.banking_service.service.impl;
 
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
-import org.skypro.banking_service.rulesystem.parameter.RuleParameters;
+import org.skypro.banking_service.ruleSystem.statickRulesSystem.parameter.RuleParameters;
 import org.skypro.banking_service.service.RulesService;
 import org.springframework.stereotype.Service;
+
+import static org.skypro.banking_service.constants.TransactionTypeConstants.DEPOSIT;
+import static org.skypro.banking_service.constants.TransactionTypeConstants.WITHDRAW;
 
 @Service
 public class RulesServiceImpl implements RulesService {
@@ -35,8 +38,8 @@ public class RulesServiceImpl implements RulesService {
      */
     @Override
     public boolean isAmountDepositMoreLimit(RuleParameters params) {
-        return repository.findTotalDepositByUserIdAndProductType(
-                params.userId(), params.typeProduct1()) > params.limit();
+        return repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
+                params.userId(), params.typeProduct1(), DEPOSIT) > params.limit();
     }
 
     /**
@@ -48,10 +51,10 @@ public class RulesServiceImpl implements RulesService {
      */
     @Override
     public boolean isAmountSeveralDepositsMoreOrEqualsLimit(RuleParameters params) {
-        long debitDeposits = repository.findTotalDepositByUserIdAndProductType(
-                params.userId(), params.typeProduct1());
-        long savingDeposits = repository.findTotalDepositByUserIdAndProductType(
-                params.userId(), params.typeProduct2());
+        long debitDeposits = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
+                params.userId(), params.typeProduct1(), DEPOSIT);
+        long savingDeposits = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
+                params.userId(), params.typeProduct2(), DEPOSIT);
         return debitDeposits >= params.limit() || savingDeposits >= params.limit();
     }
 
@@ -64,8 +67,8 @@ public class RulesServiceImpl implements RulesService {
      */
     @Override
     public boolean isAmountWithdrawMoreLimit(RuleParameters params) {
-        return repository.findTotalWithdrawByUserIdAndProductType(
-                params.userId(), params.typeProduct1()) > params.limit();
+        return repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
+                params.userId(), params.typeProduct1(), WITHDRAW) > params.limit();
     }
 
     /**
@@ -77,10 +80,10 @@ public class RulesServiceImpl implements RulesService {
      */
     @Override
     public boolean isAmountDepositsMoreThanWithdrawals(RuleParameters params) {
-        long debitDeposits = repository.findTotalDepositByUserIdAndProductType(
-                params.userId(), params.typeProduct1());
-        long debitWithdrawals = repository.findTotalWithdrawByUserIdAndProductType(
-                params.userId(), params.typeProduct1());
+        long debitDeposits = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
+                params.userId(), params.typeProduct1(), DEPOSIT);
+        long debitWithdrawals = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
+                params.userId(), params.typeProduct1(), WITHDRAW);
         return debitDeposits > debitWithdrawals;
     }
 }

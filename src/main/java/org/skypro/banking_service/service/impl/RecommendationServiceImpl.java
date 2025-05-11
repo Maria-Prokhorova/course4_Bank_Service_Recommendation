@@ -5,7 +5,7 @@ import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.service.RecommendationService;
-import org.skypro.banking_service.rulesystem.RecommendationRule;
+import org.skypro.banking_service.ruleSystem.statickRulesSystem.RecommendationRule;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
