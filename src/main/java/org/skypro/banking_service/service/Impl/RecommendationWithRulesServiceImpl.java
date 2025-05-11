@@ -1,10 +1,11 @@
-package org.skypro.banking_service.service;
+package org.skypro.banking_service.service.Impl;
 
 import org.skypro.banking_service.exception.RecommendationNotFoundException;
 import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.repositories.postgreSQL.repository.QueryRepository;
 import org.skypro.banking_service.repositories.postgreSQL.repository.RecommendationRepository;
+import org.skypro.banking_service.service.RecommendationWithRulesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

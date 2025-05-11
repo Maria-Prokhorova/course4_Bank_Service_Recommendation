@@ -1,7 +1,8 @@
 package org.skypro.banking_service.controller;
 
 import org.skypro.banking_service.model.Recommendation;
-import org.skypro.banking_service.service.RecommendationWithRulesServiceImpl;
+
+import org.skypro.banking_service.service.Impl.RecommendationWithRulesServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

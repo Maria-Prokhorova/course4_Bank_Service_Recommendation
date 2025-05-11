@@ -22,7 +22,6 @@ public class DimanicRuleImp implements DimanicRule {
 
     public static int FLAG = 0;
 
-
     public DimanicRuleImp(RecommendationRepository recommendationRepository, QueryRepository queryRepository, List<DimanicQueryExecutor> queryExecutorList) {
         this.recommendationRepository = recommendationRepository;
         this.queryRepository = queryRepository;
@@ -36,8 +35,9 @@ public class DimanicRuleImp implements DimanicRule {
         List<RecommendationDto> checkRecommendations = new ArrayList<>();
 
         allRecommendations.forEach(recommendation -> {
-            FLAG = 0;
+
             List<QueryRules> queriesByRecommendation = queryRepository.findAllQueriesByRecommendationId(recommendation.getId());
+            FLAG = 0;
 
             queriesByRecommendation.forEach(queryRules -> {
                 DimanicQueryExecutor executor = queryExecutorList.stream()

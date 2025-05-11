@@ -38,9 +38,6 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
         validateUserExists(userId);
 
         List<RecommendationDto> recommendationsByStaticRules = collectRecommendation(userId);
-        System.out.println();
-        System.out.println(recommendationsByStaticRules);
-        System.out.println();
         List<RecommendationDto> fullListRecommendation = new ArrayList<>(recommendationsByStaticRules);
         List<RecommendationDto> recommendationsByDinamicRules = dimanicRule.checkOutDinamicRule(userId);
         System.out.println();
