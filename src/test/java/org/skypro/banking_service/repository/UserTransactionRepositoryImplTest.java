@@ -1,4 +1,4 @@
-package org.skypro.banking_service.repositories.impl;
+package org.skypro.banking_service.repository;
 
 import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ComponentScan(basePackages = "org.skypro.banking_service.repository.impl")
-class RecommendationRepositoryImplTest {
+class UserTransactionRepositoryImplTest {
 
     @Autowired
     private UserTransactionRepository recommendationRepository;
