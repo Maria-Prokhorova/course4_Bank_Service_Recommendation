@@ -22,7 +22,7 @@ public class RecommendationController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<RecommendationResponse> getRecommendations(@PathVariable UUID userId) {
-        return ResponseEntity.ok(recommendationService.getRecommendations(userId));
+    public RecommendationResponse getRecommendations(@PathVariable UUID userId) {
+        return recommendationService.getRecommendations(userId);
     }
 }

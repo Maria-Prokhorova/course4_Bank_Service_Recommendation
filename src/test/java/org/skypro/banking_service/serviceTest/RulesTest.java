@@ -3,9 +3,9 @@ package org.skypro.banking_service.serviceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.rulesystem.rules.Invest500Rule;
-import org.skypro.banking_service.rulesystem.rules.SimpleCreditRule;
-import org.skypro.banking_service.rulesystem.rules.TopSavingRule;
+import org.skypro.banking_service.ruleSystem.statickRulesSystem.rules.Invest500Rule;
+import org.skypro.banking_service.ruleSystem.statickRulesSystem.rules.SimpleCreditRule;
+import org.skypro.banking_service.ruleSystem.statickRulesSystem.rules.TopSavingRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -1,17 +1,16 @@
 package org.skypro.banking_service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "recommendations")
 public class Recommendations {
 
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -25,15 +24,15 @@ public class Recommendations {
     private String productText;
 
     @OneToMany(mappedBy = "recommendations", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Queries> rule = new ArrayList<>();
+    private Set<Queries> queries = new HashSet<>();;
 
-    public Recommendations(UUID productId, String productName, String productText, List<Queries> rule) {
+    public Recommendations(UUID productId, String productName, String productText, Set<Queries> queries) {
         this.productId = productId;
         this.productName = productName;
         this.productText = productText;
-        this.rule = rule;
+        this.queries = queries;
 
-        for (Queries q : rule) {
+        for (Queries q : queries) {
             q.setRecommendations(this);
         }
     }
@@ -73,34 +72,27 @@ public class Recommendations {
         this.productText = productText;
     }
 
-    public List<Queries> getRule() {
-        return rule;
+    public Set<Queries> getQueries() {
+        return queries;
     }
 
-    public void setRule(List<Queries> rule) {
-        this.rule = rule;
+    public void setQueries(Set<Queries> queries) {
+        this.queries = queries;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Recommendations that = (Recommendations) o;
-        return Objects.equals(id, that.id) && Objects.equals(productId, that.productId) && Objects.equals(productName, that.productName) && Objects.equals(productText, that.productText) && Objects.equals(rule, that.rule);
+        return Objects.equals(id, that.id) && Objects.equals(productId, that.productId)
+               && Objects.equals(productName, that.productName)
+               && Objects.equals(productText, that.productText)
+               && Objects.equals(queries, that.queries);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, productId, productName, productText, rule);
+        return Objects.hash(id, productId, productName, productText);
     }
 
-    @Override
-    public String toString() {
-        return "Recommendations{" +
-                "id=" + id +
-                ", productId=" + productId +
-                ", productName='" + productName + '\'' +
-                ", productText='" + productText + '\'' +
-                ", rule=" + rule +
-                '}';
-    }
 }
