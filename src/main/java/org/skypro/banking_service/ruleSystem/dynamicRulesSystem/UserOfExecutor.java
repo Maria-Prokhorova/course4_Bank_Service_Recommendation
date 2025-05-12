@@ -26,7 +26,7 @@ public class  UserOfExecutor implements ConditionExecutor {
     public boolean evaluate(UUID userId, List<String> arguments, boolean negate) {
         String productType = arguments.get(0);
         boolean result = repository.countTransactionsByUserIdAndProductType(
-                userId, productType) >= REQUIRED_ARGS_COUNT;
+                userId, productType) >= MIN_TRANSACTIONS_FOR_OF_USER;
         return negate != result;
     }
 }

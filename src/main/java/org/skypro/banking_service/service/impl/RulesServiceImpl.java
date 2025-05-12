@@ -1,5 +1,6 @@
 package org.skypro.banking_service.service.impl;
 
+import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
 import org.skypro.banking_service.ruleSystem.statickRulesSystem.parameter.RuleParameters;
 import org.skypro.banking_service.service.RulesService;
@@ -11,9 +12,9 @@ import static org.skypro.banking_service.constants.TransactionTypeConstants.WITH
 @Service
 public class RulesServiceImpl implements RulesService {
 
-    private final UserTransactionRepositoryImpl repository;
+    private final UserTransactionRepository repository;
 
-    public RulesServiceImpl(UserTransactionRepositoryImpl repository) {
+    public RulesServiceImpl(UserTransactionRepository repository) {
         this.repository = repository;
     }
 

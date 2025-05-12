@@ -1,5 +1,6 @@
 package org.skypro.banking_service.ruleSystem.dynamicRulesSystem.serviceQuery;
 
+import org.skypro.banking_service.exception.QueryEvaluationException;
 import org.skypro.banking_service.model.Queries;
 import org.skypro.banking_service.ruleSystem.dynamicRulesSystem.ConditionExecutor;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,14 @@ public class RuleQueryService {
 
     public boolean ruleQuery(Queries queries, UUID userId) {
         if (queries == null || userId == null) {
-            throw new IllegalArgumentException("Condition and userId cannot be null");
+            throw new QueryEvaluationException("Condition and userId cannot be null");
         }
 
         // Находим подходящий обработчик правил
         ConditionExecutor executor = executors.stream()
                 .filter(e -> e.supports(queries.getQuery()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No executor for query: " + queries.getQuery()));
+                .orElseThrow(() -> new QueryEvaluationException("No executor for query: " + queries.getQuery()));
 
         return executor.evaluate(userId, queries.getArguments(), queries.isNegate());
     }

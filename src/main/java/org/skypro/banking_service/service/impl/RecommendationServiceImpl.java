@@ -3,41 +3,54 @@ package org.skypro.banking_service.service.impl;
 import org.skypro.banking_service.dto.RecommendationDto;
 import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
+import org.skypro.banking_service.model.Queries;
+import org.skypro.banking_service.model.Recommendations;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
-import org.skypro.banking_service.service.RecommendationService;
+import org.skypro.banking_service.repositories.postgres.repository.QueriesRepository;
+import org.skypro.banking_service.repositories.postgres.repository.RecommendationsRepository;
+import org.skypro.banking_service.ruleSystem.dynamicRulesSystem.serviceQuery.RuleQueryService;
 import org.skypro.banking_service.ruleSystem.statickRulesSystem.RecommendationRule;
+import org.skypro.banking_service.service.RecommendationService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+/**
+ * Сервис реализации рекомендаций клиенту по новым банковским продуктам.
+ * Объединяет статические и динамические правила для определения подходящих продуктов.
+ */
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
 
-    private final UserTransactionRepository repository;
-    private final List<RecommendationRule> listRules;
+    private final List<RecommendationRule> staticRules;
+    private final RecommendationsRepository recommendationsRepository;
+    private final QueriesRepository queriesRepository;
+    private final RuleQueryService ruleQueryService;
+    private final UserTransactionRepository userTransactionRepository;
 
-    public RecommendationServiceImpl(UserTransactionRepository repository, List<RecommendationRule> listRules) {
-        this.repository = repository;
-        this.listRules = listRules;
+    public RecommendationServiceImpl(List<RecommendationRule> staticRules,
+                                     RecommendationsRepository recommendationsRepository,
+                                     QueriesRepository queriesRepository,
+                                     RuleQueryService ruleQueryService,
+                                     UserTransactionRepository userTransactionRepository) {
+        this.staticRules = staticRules;
+        this.recommendationsRepository = recommendationsRepository;
+        this.queriesRepository = queriesRepository;
+        this.ruleQueryService = ruleQueryService;
+        this.userTransactionRepository = userTransactionRepository;
     }
 
     /**
-     * Метод, позволяющий получить рекомендаций для клиента по новым банковским продуктам.
-     * В методе выполняется проверка на валидность данных, а также выполнения установленных условий по продуктам.
-     *
-     * @param userId идентификатор клиента.
-     * @return список рекомендаций по новым продуктам, которые подходят клиенту.
-     *      * В случае, если клиенту не подходит ни одни из продуктов, вернется пустой лист.
+     * Возвращает рекомендации по новым банковским продуктам на основе как статических, так и динамических правил.
+     * Метод предварительно проверяет наличие пользователя в системе.
      */
     @Override
     public RecommendationResponse getRecommendations(UUID userId) {
         validateUserExists(userId);
-
-        List<RecommendationDto> recommendations = collectRecommendation(userId);
-
-        return new RecommendationResponse(userId, recommendations);
+        List<RecommendationDto> result = new ArrayList<>();
+        result.addAll(getStaticRecommendations(userId));
+        result.addAll(getDynamicRecommendations(userId));
+        return new RecommendationResponse(userId, result);
     }
 
     /** Внутренний метод для проверки валидности данных: проверяет существование клиента в БД.
@@ -47,25 +60,93 @@ public class RecommendationServiceImpl implements RecommendationService {
      * @param userId - идентификатор клиента.
      */
     private void validateUserExists(UUID userId) {
-        if (!repository.userExists(userId)) {
+        if (!userTransactionRepository.userExists(userId)) {
             throw new UserNotFoundException(userId);
         }
     }
 
     /**
-     * Внутренний метод, который по очереди запускает одну их трех реализаций интерфейса RecommendationRule
-     * (Invest500Rule, SimpleCreditRule, TopSavingRule), для проверки подходят ли клиенту новые банковские продукты.
-     *
-     * @param userId - идентификатор клиента.
-     * @return список рекомендаций по новым продуктам, которые подходят клиенту.
-     * В случае, если клиенту не подходит ни одни из продуктов, вернется пустой лист.
+     * Получает список рекомендаций по статическим правилам (встроенные Java-реализации).
+     * Каждое правило проверяет, подходит ли оно данному пользователю, и при успешной проверке
+     * возвращает DTO рекомендации.
      */
-    private List<RecommendationDto> collectRecommendation(UUID userId) {
+
+    private List<RecommendationDto> getStaticRecommendations(UUID userId) {
         List<RecommendationDto> recommend = new ArrayList<>();
-        for (RecommendationRule rule : listRules) {
-            rule.checkOut(userId).ifPresent(recommend::add);
+        for (RecommendationRule rule : staticRules) {
+            rule
+                    .checkOut(userId)
+                    .ifPresent(recommend::add);
         }
         return recommend;
     }
+
+    /**
+     * Получает список рекомендаций, основанных на динамических условиях из базы данных.
+     * У каждой рекомендации может быть один или несколько связанных запросов (queries).
+     * Все условия должны быть выполнены, чтобы рекомендация считалась подходящей.
+     */
+    private List<RecommendationDto> getDynamicRecommendations(UUID userId) {
+        List<RecommendationDto> validRecommendations = new ArrayList<>();
+        Map<Recommendations, List<Queries>> queriesByRecommendation = groupQueriesByRecommendation();
+
+        for (Map.Entry<Recommendations, List<Queries>> entry : queriesByRecommendation.entrySet()) {
+            Recommendations recommendation = entry.getKey();
+            List<Queries> queries = entry.getValue();
+
+            if (allConditionsAreSatisfied(queries, userId)) {
+                validRecommendations.add(convertToDto(recommendation));
+            }
+        }
+
+        return validRecommendations;
+    }
+
+
+    /**
+     * Группирует все запросы (queries) из БД по объектам.
+     */
+    private Map<Recommendations, List<Queries>> groupQueriesByRecommendation() {
+        List<Queries> allQueries = queriesRepository.findAll();
+        Map<Recommendations, List<Queries>> grouped = new HashMap<>();
+
+        for (Queries query : allQueries) {
+            Recommendations recommendation = query.getRecommendations();
+            grouped.computeIfAbsent(recommendation, k -> new ArrayList<>()).add(query);
+        }
+
+        return grouped;
+    }
+
+    /**
+     * Проверяет, выполняются ли все условия (queries) динамической рекомендации
+     * для конкретного пользователя.
+     *
+     * @param queries Список условий.
+     * @param userId  Идентификатор пользователя.
+     * @return true, если все условия удовлетворены; false — иначе.
+     */
+    private boolean allConditionsAreSatisfied(List<Queries> queries, UUID userId) {
+        for (Queries query : queries) {
+            if (!ruleQueryService.ruleQuery(query, userId)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Преобразует сущность {@link Recommendations} в DTO {@link RecommendationDto}.
+     * Используется для возврата клиенту только нужных данных.
+     */
+    private RecommendationDto convertToDto(Recommendations recommendation) {
+        return new RecommendationDto(
+                recommendation.getProductName(),
+                recommendation.getProductId().toString(),
+                recommendation.getProductText()
+        );
+    }
+
 
 }
