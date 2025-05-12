@@ -17,10 +17,10 @@ public class UserOfQuery implements DimanicQueryExecutor {
 
     @Override
     public boolean checkOutNameQuery(String queryType) {
-        return USER_OF.equals(queryType);
+        return USER_OF.getName().equalsIgnoreCase(queryType);
     }
 
-    //Запрос проверяет, использует ли пользователем продукта X.
+    //Запрос проверяет, использует ли пользователь продукт X.
     @Override
     public boolean checkOutQuery(QueryParameters params) {
         boolean result = repository.existsUserProductByType(

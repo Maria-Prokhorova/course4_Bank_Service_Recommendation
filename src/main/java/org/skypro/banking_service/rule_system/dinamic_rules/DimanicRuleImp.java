@@ -20,13 +20,13 @@ public class DimanicRuleImp implements DimanicRule {
     private final QueryRepository queryRepository;
     private final List<DimanicQueryExecutor> queryExecutorList;
 
-    public static int FLAG = 0;
-
     public DimanicRuleImp(RecommendationRepository recommendationRepository, QueryRepository queryRepository, List<DimanicQueryExecutor> queryExecutorList) {
         this.recommendationRepository = recommendationRepository;
         this.queryRepository = queryRepository;
         this.queryExecutorList = queryExecutorList;
     }
+
+    public static int FLAG = 0;
 
     @Override
     public List<RecommendationDto> checkOutDinamicRule(UUID userId) {

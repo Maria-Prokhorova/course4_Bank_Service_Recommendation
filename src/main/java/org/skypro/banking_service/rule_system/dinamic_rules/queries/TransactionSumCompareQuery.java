@@ -18,7 +18,7 @@ public class TransactionSumCompareQuery implements DimanicQueryExecutor {
 
     @Override
     public boolean checkOutNameQuery(String queryType) {
-        return TRANSACTION_SUM_COMPARE.equals(queryType);
+        return TRANSACTION_SUM_COMPARE.getName().equalsIgnoreCase(queryType);
     }
 
     //Запрос сравнивает сумму всех транзакций типа Y по продуктам типа X с некоторой константой C.

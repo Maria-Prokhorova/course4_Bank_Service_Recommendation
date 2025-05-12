@@ -55,6 +55,13 @@ public class RecommendationWithRulesServiceImpl implements RecommendationWithRul
 
     }
 
+    /**
+     * Внутреннй метод проверки валидности данных: проверяет существование рекомендации с указанным id в БД.
+     *
+     * @param productId - id рекомендации.
+     * @return возвращает искомую рекомендацию, в случае существования указанного id.
+     * @throws RecommendationNotFoundException - в случае отсутствия указанного id.
+     */
     private Recommendation validateId(UUID productId) {
         Recommendation recommend = recommendationRepository.findByProductId(productId);
         if (recommend == null) {
@@ -63,11 +70,18 @@ public class RecommendationWithRulesServiceImpl implements RecommendationWithRul
         return recommend;
     }
 
+    /**
+     * Внутреннй метод проверки валидности данных: проверяет кол-во введеных запросов в динамическом правиле,
+     * название запроса, название продукта, название транзакции.
+     *
+     * @param recommendation - информация о динамическом правиле рекомендации и рекомендуемом продукте.
+     * @throws IllegalArgumentException в случае невыполнения, какого-либо из условий
+     */
     private static void validateData(Recommendation recommendation) {
         List<QueryRules> query = recommendation.getRule();
 
         // Проверка на количество введенных запросов в динамическом правиле.
-        if (query.size()!=3) {
+        if (query.size() != 3) {
             throw new IllegalArgumentException("Динамическое правило имеет недопустимое количество запросов.");
         }
 
@@ -78,7 +92,7 @@ public class RecommendationWithRulesServiceImpl implements RecommendationWithRul
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Название запроса имеет недопустимое значение.");
             }
-            String [] arguments = q.getArguments();
+            String[] arguments = q.getArguments();
             try {
                 DinamicRuleConstant.TypeProduct.valueOf(arguments[0]);
             } catch (IllegalArgumentException e) {
@@ -91,7 +105,6 @@ public class RecommendationWithRulesServiceImpl implements RecommendationWithRul
                     throw new IllegalArgumentException("Название транзакции имеет недопустимое значение.");
                 }
             }
-
         });
     }
 }

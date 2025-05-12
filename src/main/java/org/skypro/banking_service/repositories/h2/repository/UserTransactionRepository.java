@@ -7,6 +7,8 @@ public interface UserTransactionRepository {
 
     List<String> findUsedProductTypesByUserId(UUID userId);
 
+    List<String> findUsedProductByUserIdAndProductType(UUID userId, String productType);
+
     long findTotalDepositByUserIdAndProductType(UUID userId, String productType);
 
     long findTotalWithdrawByUserIdAndProductType(UUID userId, String productType);

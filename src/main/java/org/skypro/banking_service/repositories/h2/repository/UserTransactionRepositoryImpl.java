@@ -28,6 +28,19 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
     }
 
     @Override
+    public List<String> findUsedProductByUserIdAndProductType(UUID userId, String productType) {
+        String sql = """
+                SELECT DISTINCT p.type
+                FROM transactions t
+                JOIN products p ON t.product_id = p.id
+                WHERE t.user_id = ?
+                AND p.type = ?
+                """;
+        return jdbcTemplate.queryForList(sql, String.class, userId, productType);
+        //Возвращает список заданного продуктов, которыми уже пользовался user
+    }
+
+    @Override
     public long findTotalDepositByUserIdAndProductType(UUID userId, String productType) {
         String sql = """
                 SELECT COALESCE(SUM(t.amount), 0)
@@ -79,7 +92,7 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
                   AND p.type = ?
                 """;
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, userId, productType));
-        // Проверяем пользовался ли user инвест продуктом
+        // Проверяем пользовался ли user заданным продуктом
     }
 
     @Override

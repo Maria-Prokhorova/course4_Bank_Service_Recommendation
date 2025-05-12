@@ -1,10 +1,11 @@
 package org.skypro.banking_service.rule_system.dinamic_rules.queries;
 
-import org.skypro.banking_service.constants.DinamicRuleConstant;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.rule_system.dinamic_rules.ComparisonOperator;
 import org.skypro.banking_service.rule_system.dinamic_rules.parameter.QueryParameters;
 import org.springframework.stereotype.Component;
+
+import static org.skypro.banking_service.constants.DinamicRuleConstant.TypeQuery.TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW;
 
 @Component
 public class TransactionSumCompareDepositWithdrawQuery implements DimanicQueryExecutor {
@@ -17,7 +18,7 @@ public class TransactionSumCompareDepositWithdrawQuery implements DimanicQueryEx
 
     @Override
     public boolean checkOutNameQuery(String queryType) {
-        return DinamicRuleConstant.TypeQuery.TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW.equals(queryType);
+        return TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW.getName().equalsIgnoreCase(queryType);
     }
 
     //Запрос сравнивает сумму всех транзакций типа DEPOSIT с суммой всех транзакций типа
