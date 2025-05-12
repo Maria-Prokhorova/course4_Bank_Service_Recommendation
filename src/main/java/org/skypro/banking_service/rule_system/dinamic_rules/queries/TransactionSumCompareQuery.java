@@ -5,7 +5,7 @@ import org.skypro.banking_service.rule_system.dinamic_rules.ComparisonOperator;
 import org.skypro.banking_service.rule_system.dinamic_rules.parameter.QueryParameters;
 import org.springframework.stereotype.Component;
 
-import static org.skypro.banking_service.constants.DinamicRuleConstant.TRANSACTION_SUM_COMPARE;
+import static org.skypro.banking_service.constants.DinamicRuleConstant.TypeQuery.TRANSACTION_SUM_COMPARE;
 
 @Component
 public class TransactionSumCompareQuery implements DimanicQueryExecutor {
@@ -18,7 +18,7 @@ public class TransactionSumCompareQuery implements DimanicQueryExecutor {
 
     @Override
     public boolean checkOutNameQuery(String queryType) {
-        return TRANSACTION_SUM_COMPARE.equalsIgnoreCase(queryType);
+        return TRANSACTION_SUM_COMPARE.equals(queryType);
     }
 
     //Запрос сравнивает сумму всех транзакций типа Y по продуктам типа X с некоторой константой C.

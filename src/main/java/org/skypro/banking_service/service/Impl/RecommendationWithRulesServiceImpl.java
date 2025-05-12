@@ -1,5 +1,6 @@
 package org.skypro.banking_service.service.Impl;
 
+import org.skypro.banking_service.constants.DinamicRuleConstant;
 import org.skypro.banking_service.exception.RecommendationNotFoundException;
 import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
@@ -31,7 +32,9 @@ public class RecommendationWithRulesServiceImpl implements RecommendationWithRul
         for (QueryRules query : recommendation.getRule()) {
             query.setRecommendations(recommendation);
         }
+        validateData(recommendation);
         logger.info("Was invoked method for create recommendation.");
+
         return recommendationRepository.save(recommendation);
     }
 
@@ -58,5 +61,37 @@ public class RecommendationWithRulesServiceImpl implements RecommendationWithRul
             throw new RecommendationNotFoundException("Рекомендации с таким id не найдены.");
         }
         return recommend;
+    }
+
+    private static void validateData(Recommendation recommendation) {
+        List<QueryRules> query = recommendation.getRule();
+
+        // Проверка на количество введенных запросов в динамическом правиле.
+        if (query.size()!=3) {
+            throw new IllegalArgumentException("Динамическое правило имеет недопустимое количество запросов.");
+        }
+
+        //Проверка параметров запроса: название запроса, название продукта, название транзакции.
+        query.forEach(q -> {
+            try {
+                DinamicRuleConstant.TypeQuery.valueOf(q.getQuery());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Название запроса имеет недопустимое значение.");
+            }
+            String [] arguments = q.getArguments();
+            try {
+                DinamicRuleConstant.TypeProduct.valueOf(arguments[0]);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Название продукта имеет недопустимое значение.");
+            }
+            if (arguments.length == 4) {
+                try {
+                    DinamicRuleConstant.TypeTransaction.valueOf(arguments[1]);
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Название транзакции имеет недопустимое значение.");
+                }
+            }
+
+        });
     }
 }

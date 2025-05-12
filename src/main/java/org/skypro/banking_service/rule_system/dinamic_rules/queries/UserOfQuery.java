@@ -4,7 +4,7 @@ import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepo
 import org.skypro.banking_service.rule_system.dinamic_rules.parameter.QueryParameters;
 import org.springframework.stereotype.Component;
 
-import static org.skypro.banking_service.constants.DinamicRuleConstant.USER_OF;
+import static org.skypro.banking_service.constants.DinamicRuleConstant.TypeQuery.USER_OF;
 
 @Component
 public class UserOfQuery implements DimanicQueryExecutor {
@@ -17,7 +17,7 @@ public class UserOfQuery implements DimanicQueryExecutor {
 
     @Override
     public boolean checkOutNameQuery(String queryType) {
-        return USER_OF.equalsIgnoreCase(queryType);
+        return USER_OF.equals(queryType);
     }
 
     //Запрос проверяет, использует ли пользователем продукта X.

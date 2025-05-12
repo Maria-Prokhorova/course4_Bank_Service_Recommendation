@@ -1,4 +1,4 @@
-package org.skypro.banking_service.service;
+package org.skypro.banking_service.service.Impl;
 
 import org.skypro.banking_service.dto.RecommendationDto;
 import org.skypro.banking_service.dto.RecommendationResponse;
@@ -6,6 +6,7 @@ import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.rule_system.dinamic_rules.DimanicRule;
 import org.skypro.banking_service.rule_system.static_rules.rules.StaticRule;
+import org.skypro.banking_service.service.RecommendationForClientService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,9 +41,6 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
         List<RecommendationDto> recommendationsByStaticRules = collectRecommendation(userId);
         List<RecommendationDto> fullListRecommendation = new ArrayList<>(recommendationsByStaticRules);
         List<RecommendationDto> recommendationsByDinamicRules = dimanicRule.checkOutDinamicRule(userId);
-        System.out.println();
-        System.out.println(recommendationsByDinamicRules);
-        System.out.println();
         fullListRecommendation.addAll(recommendationsByDinamicRules);
 
         return new RecommendationResponse(userId, fullListRecommendation);
