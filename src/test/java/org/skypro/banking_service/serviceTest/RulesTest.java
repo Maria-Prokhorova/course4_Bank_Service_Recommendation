@@ -2,7 +2,7 @@ package org.skypro.banking_service.serviceTest;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.skypro.banking_service.dto.RecommendationDto;
+import org.skypro.banking_service.model.dto.RecommendationDto;
 import org.skypro.banking_service.ruleSystem.statickRulesSystem.rules.Invest500Rule;
 import org.skypro.banking_service.ruleSystem.statickRulesSystem.rules.SimpleCreditRule;
 import org.skypro.banking_service.ruleSystem.statickRulesSystem.rules.TopSavingRule;

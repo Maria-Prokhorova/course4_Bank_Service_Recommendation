@@ -1,16 +1,18 @@
 package org.skypro.banking_service.service.impl;
 
-import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.model.Queries;
 import org.skypro.banking_service.model.Recommendations;
+import org.skypro.banking_service.model.dto.RecommendationDto;
+import org.skypro.banking_service.model.dto.RecommendationResponse;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.repositories.postgres.repository.QueriesRepository;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationsRepository;
 import org.skypro.banking_service.ruleSystem.dynamicRulesSystem.serviceQuery.RuleQueryService;
 import org.skypro.banking_service.ruleSystem.statickRulesSystem.RecommendationRule;
 import org.skypro.banking_service.service.RecommendationService;
+import org.skypro.banking_service.telegramBot.service.RuleStatService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,19 +24,22 @@ import java.util.*;
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
 
-    private final List<RecommendationRule> staticRules;
     private final RecommendationsRepository recommendationsRepository;
+    private final RuleStatService ruleStatService;
+    private final List<RecommendationRule> staticRules;
     private final QueriesRepository queriesRepository;
     private final RuleQueryService ruleQueryService;
     private final UserTransactionRepository userTransactionRepository;
 
-    public RecommendationServiceImpl(List<RecommendationRule> staticRules,
-                                     RecommendationsRepository recommendationsRepository,
+    public RecommendationServiceImpl(RecommendationsRepository recommendationsRepository,
+                                     RuleStatService ruleStatService,
+                                     List<RecommendationRule> staticRules,
                                      QueriesRepository queriesRepository,
                                      RuleQueryService ruleQueryService,
                                      UserTransactionRepository userTransactionRepository) {
-        this.staticRules = staticRules;
         this.recommendationsRepository = recommendationsRepository;
+        this.ruleStatService = ruleStatService;
+        this.staticRules = staticRules;
         this.queriesRepository = queriesRepository;
         this.ruleQueryService = ruleQueryService;
         this.userTransactionRepository = userTransactionRepository;
@@ -50,6 +55,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         List<RecommendationDto> result = new ArrayList<>();
         result.addAll(getStaticRecommendations(userId));
         result.addAll(getDynamicRecommendations(userId));
+
         return new RecommendationResponse(userId, result);
     }
 
@@ -96,6 +102,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 
             if (allConditionsAreSatisfied(queries, userId)) {
                 validRecommendations.add(convertToDto(recommendation));
+
+                ruleStatService.incrementCounter(recommendation.getProductId());
             }
         }
 
@@ -135,7 +143,6 @@ public class RecommendationServiceImpl implements RecommendationService {
         return true;
     }
 
-
     /**
      * Преобразует сущность {@link Recommendations} в DTO {@link RecommendationDto}.
      * Используется для возврата клиенту только нужных данных.
@@ -148,5 +155,10 @@ public class RecommendationServiceImpl implements RecommendationService {
         );
     }
 
+    @CacheEvict(value = "recommendations", allEntries = true)
+    @Override
+    public void clearCache() {
+        // Spring автоматически очистит кеш благодаря аннотации
+    }
 
 }
