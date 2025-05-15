@@ -31,3 +31,18 @@ CREATE TABLE query_arguments
     CONSTRAINT fk_query_arguments_queries
         FOREIGN KEY (query_id) REFERENCES queries (id) ON DELETE CASCADE
 );
+
+-- changeset krasnovvg:4
+-- Таблица для телеграмм бота
+CREATE TABLE rule_stat
+(
+    rule_id UUID PRIMARY KEY,
+    count   BIGINT NOT NULL DEFAULT 0
+);
+
+-- changeset krasnovvg:5
+CREATE TABLE telegram_user
+(
+    chat_id  BIGINT PRIMARY KEY,
+    username VARCHAR(255)
+);

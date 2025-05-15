@@ -3,7 +3,10 @@ package org.skypro.banking_service.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "recommendations")
@@ -24,7 +27,7 @@ public class Recommendations {
     private String productText;
 
     @OneToMany(mappedBy = "recommendations", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Queries> queries = new HashSet<>();;
+    private Set<Queries> queries = new HashSet<>();
 
     public Recommendations(UUID productId, String productName, String productText, Set<Queries> queries) {
         this.productId = productId;

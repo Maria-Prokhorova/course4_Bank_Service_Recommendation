@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface RecommendationsRepository extends JpaRepository <Recommendations, Long> {
+public interface RecommendationsRepository extends JpaRepository<Recommendations, UUID> {
 
     @Query(value = "SELECT * FROM recommendations WHERE product_id = :productId",
             nativeQuery = true)
