@@ -10,6 +10,7 @@ import org.skypro.banking_service.telegramBot.dto.InfoDTO;
 import org.skypro.banking_service.telegramBot.dto.UserFullName;
 import org.skypro.banking_service.telegramBot.model.TelegramUser;
 import org.skypro.banking_service.telegramBot.service.RuleStatService;
+import org.skypro.banking_service.telegramBot.service.TelegramUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,8 @@ import java.util.Optional;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
+
+    private final TelegramUserService telegramUserService;
 
     private final UserTransactionRepository userTransactionRepository;
 
@@ -42,6 +45,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
     public TelegramBot(
+            TelegramUserService telegramUserService,
             UserTransactionRepository userTransactionRepository,
             RecommendationService recommendationService,
             RuleStatService ruleStatService,
@@ -50,6 +54,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             @Value("${telegram.bot.username}") String botUsername,
             @Value("${telegram.bot.token}") String botToken
     ) {
+        this.telegramUserService = telegramUserService;
         this.userTransactionRepository = userTransactionRepository;
         this.recommendationService = recommendationService;
         this.ruleStatService = ruleStatService;
@@ -71,7 +76,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println("Получен апдейт: " + update);
+        logger.info("Получен апдейт: {}", update);
         if (update.hasMessage() && update.getMessage().hasText()) {
             String text = update.getMessage().getText().trim();
             Long chatId = update.getMessage().getChatId();
@@ -83,10 +88,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void registerUserIfNotExists(Long chatId, String username) {
-        telegramUserRepository.findById(chatId)
-                .orElseGet(() -> telegramUserRepository.save(new TelegramUser(chatId, username)));
+        if (telegramUserService.isFirstTime(chatId)) {
+            telegramUserService.register(chatId, username);
+        }
     }
-
     private void handleCommand(String text, Long chatId) {
         if (text.equals("/start")) {
             sendMessage(chatId, """
@@ -100,13 +105,18 @@ public class TelegramBot extends TelegramLongPollingBot {
                     /management/clear-caches — сбросить кэш
                     """);
         } else if (text.equals("/rule/stats")) {
-            String stats = ruleStatService.getAllStats().toString();
-            sendMessage(chatId, "Статистика:\n" + stats);
+            StringBuilder sb = new StringBuilder("Статистика по правилам:\n\n");
+            ruleStatService.getAllStats().forEach(stat -> {
+                sb.append("Rule ID: ").append(stat.ruleId())
+                        .append("\nCount: ").append(stat.count())
+                        .append("\n\n");
+            });
+            sendMessage(chatId, sb.toString());
 
         } else if (text.equals("/management/info")) {
             String name = infoDTO.name();
             String version = infoDTO.version();
-            sendMessage(chatId, "Сервис: " + name + "\nВерсия: " + version);
+            sendMessage(chatId, "name: " + name + "\nversion: " + version);
 
         } else if (text.equals("/management/clear-caches")) {
             recommendationService.clearCache();
