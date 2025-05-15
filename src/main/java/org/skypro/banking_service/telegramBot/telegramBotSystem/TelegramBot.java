@@ -127,7 +127,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             handleRecommendationCommand(chatId, username);
 
         } else {
-            sendMessage(chatId, "Я не знаю такой команды. Попробуй /recommend.");
+            sendMessage(chatId, "Я не знаю такой команды. Попробуй /recommend username.");
         }
     }
 
