@@ -1,12 +1,13 @@
 package org.skypro.banking_service.controller;
 
 import org.junit.jupiter.api.Test;
-import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.dto.RecommendationResponse;
+import org.mockito.Mock;
+import org.skypro.banking_service.model.dto.RecommendationDto;
+import org.skypro.banking_service.model.dto.RecommendationResponse;
 import org.skypro.banking_service.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+//import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -24,16 +25,17 @@ class RecommendationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private RecommendationService recommendationService;
 
     @Test
     void getRecommendations_shouldReturnResponse() throws Exception {
         UUID userId = UUID.randomUUID();
-        RecommendationDto dto = new RecommendationDto();
-        dto.setId("prod");
-        dto.setName("Product 1");
-        dto.setText("Выбери этот продукт");
+        RecommendationDto dto = new RecommendationDto(
+                "Product 1",
+                "prod",
+                "Выбери этот продукт"
+        );
 
         RecommendationResponse response = new RecommendationResponse();
         response.setUserId(userId);

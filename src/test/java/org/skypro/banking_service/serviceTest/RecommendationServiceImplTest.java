@@ -1,8 +1,8 @@
 package org.skypro.banking_service.serviceTest;
 
 import org.junit.jupiter.api.Test;
-import org.skypro.banking_service.dto.RecommendationDto;
-import org.skypro.banking_service.dto.RecommendationResponse;
+import org.skypro.banking_service.model.dto.RecommendationDto;
+import org.skypro.banking_service.model.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.service.impl.RecommendationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
