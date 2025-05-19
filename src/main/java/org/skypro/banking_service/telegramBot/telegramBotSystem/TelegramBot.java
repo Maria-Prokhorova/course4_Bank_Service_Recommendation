@@ -1,15 +1,13 @@
 package org.skypro.banking_service.telegramBot.telegramBotSystem;
 
 
-import org.skypro.banking_service.model.dto.RecommendationDto;
-import org.skypro.banking_service.model.dto.RecommendationResponse;
+import org.skypro.banking_service.dto.RecommendationDTO;
+import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
-import org.skypro.banking_service.service.RecommendationService;
-import org.skypro.banking_service.telegramBot.Repository.TelegramUserRepository;
-import org.skypro.banking_service.telegramBot.dto.InfoDTO;
+import org.skypro.banking_service.service.RecommendationForClientService;
+import org.skypro.banking_service.telegramBot.repository.TelegramUserRepository;
+import org.skypro.banking_service.dto.InfoDTO;
 import org.skypro.banking_service.telegramBot.dto.UserFullName;
-import org.skypro.banking_service.telegramBot.model.TelegramUser;
-import org.skypro.banking_service.telegramBot.service.RuleStatService;
 import org.skypro.banking_service.telegramBot.service.TelegramUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +29,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final UserTransactionRepository userTransactionRepository;
 
-    private final RecommendationService recommendationService;
-
-    private final RuleStatService ruleStatService;
+    private final RecommendationForClientService recommendationForClientService;
 
     private final InfoDTO infoDTO;
 
@@ -47,8 +43,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot(
             TelegramUserService telegramUserService,
             UserTransactionRepository userTransactionRepository,
-            RecommendationService recommendationService,
-            RuleStatService ruleStatService,
+            RecommendationForClientService recommendationForClientService,
             TelegramUserRepository telegramUserRepository,
             InfoDTO infoDTO,
             @Value("${telegram.bot.username}") String botUsername,
@@ -56,8 +51,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     ) {
         this.telegramUserService = telegramUserService;
         this.userTransactionRepository = userTransactionRepository;
-        this.recommendationService = recommendationService;
-        this.ruleStatService = ruleStatService;
+        this.recommendationForClientService = recommendationForClientService;
         this.telegramUserRepository = telegramUserRepository;
         this.infoDTO = infoDTO;
         this.botUsername = botUsername;
@@ -92,36 +86,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             telegramUserService.register(chatId, username);
         }
     }
+
     private void handleCommand(String text, Long chatId) {
         if (text.equals("/start")) {
             sendMessage(chatId, """
                     Привет!
                     
-                    Я бот по рекомендациям банковских продуктов. Вот что я умею:
+                    Я бот банка «Стар». Я могу для вас подготовить список банковских продуктов. Для этого воспользуйтесь командой:
                     
                     /recommend username — получить персональные рекомендации
-                    /rule/stats — статистика
-                    /management/info — версия сервиса
-                    /management/clear-caches — сбросить кэш
                     """);
-        } else if (text.equals("/rule/stats")) {
-            StringBuilder sb = new StringBuilder("Статистика по правилам:\n\n");
-            ruleStatService.getAllStats().forEach(stat -> {
-                sb.append("Rule ID: ").append(stat.ruleId())
-                        .append("\nCount: ").append(stat.count())
-                        .append("\n\n");
-            });
-            sendMessage(chatId, sb.toString());
-
-        } else if (text.equals("/management/info")) {
-            String name = infoDTO.name();
-            String version = infoDTO.version();
-            sendMessage(chatId, "name: " + name + "\nversion: " + version);
-
-        } else if (text.equals("/management/clear-caches")) {
-            recommendationService.clearCache();
-            sendMessage(chatId, "Кэш очищен.");
-
         } else if (text.startsWith("/recommend ")) {
             String username = text.substring("/recommend ".length()).trim();
             handleRecommendationCommand(chatId, username);
@@ -157,7 +131,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         UserFullName user = optionalUser.get();
 
-        RecommendationResponse response = recommendationService.getRecommendations(user.id());
+        RecommendationResponse response = recommendationForClientService.getRecommendationsForClient(user.id());
 
         if (response.getRecommendations() == null || response.getRecommendations().isEmpty()) {
             sendMessage(chatId, "Новых рекомендаций нет.");
@@ -171,12 +145,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 .append("!\n\n")
                 .append("Новые продукты для вас:\n");
 
-        for (RecommendationDto dto : response.getRecommendations()) {
+        for (RecommendationDTO dto : response.getRecommendations()) {
             message.append("• ").append(dto.getName()).append(" — ").append(dto.getText()).append("\n");
         }
 
         sendMessage(chatId, message.toString());
-
     }
-
 }

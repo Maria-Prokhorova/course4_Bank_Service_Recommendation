@@ -14,7 +14,7 @@
 
 	<groupId>org.skypro</groupId>
 	<artifactId>banking_service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>Banking service</name>
 	<description>Bank service for sending new offers</description>
 
@@ -92,13 +92,12 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.3.2</version>
+			<version>42.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
-
 	</dependencies>
 
 	<build>
