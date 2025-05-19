@@ -2,11 +2,15 @@ package org.skypro.banking_service.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.skypro.banking_service.exception.RecommendationNotFoundException;
 import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.dto.StatisticsDTO;
 import org.skypro.banking_service.dto.StatisticsResponse;
 import org.skypro.banking_service.service.DynamicRulesService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +31,40 @@ public class DynamicRulesController {
 
     @Operation(summary = "Добавление нового банковского продукта в базу данных.", description = "В ответе возвращается " +
             "информация о добавленном банковском продукте, со следующими полями productId, productName, productText и queries.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Продукт успешно добавлен в базу данных."),
+            @ApiResponse(responseCode = "400", description = "Введены некорректные данные по продукту.")
+    })
     @PostMapping
-    public Recommendation createRecommendation(@Parameter(
+    public ResponseEntity<?> createRecommendation(@Parameter(
             description = "Информация о новом продукте, который хотим добавить в базу.",
             required = true)
-                                               @RequestBody Recommendation recommendation) {
-        return dynamicRulesService.addProductWithDynamicRule(recommendation);
+                                                  @RequestBody Recommendation recommendation) {
+        try {
+            Recommendation newRecommendation = dynamicRulesService.addProductWithDynamicRule(recommendation);
+            return new ResponseEntity<>(newRecommendation, HttpStatus.OK);
+        } catch (IllegalArgumentException exception) {
+            return new ResponseEntity<>("Новый банковский продукт имеет неверный формат динамического правила. " +
+                    "Проверьте количество запросов (должно быть три), тип запроса, тип продукта, тип транзакции.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Operation(summary = "Удаление из базы данных банковского продукта по его ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Продукт успешно удалён."),
+            @ApiResponse(responseCode = "404", description = "Продукт с таким id не найден.")
+    })
+    @DeleteMapping("{productId}")
+    public ResponseEntity<?> deleteRecommendation(@Parameter(
+            description = "ID продукта, который хотим удалить из базы.",
+            required = true)
+                                                  @PathVariable UUID productId) {
+        try {
+            dynamicRulesService.deleteProductWithDynamicRule(productId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RecommendationNotFoundException exception) {
+            return new ResponseEntity<>("Продукт с id = " + productId + " не найден.", HttpStatus.NOT_FOUND);
+        }
     }
 
     @Operation(summary = "Получение списка всех банковских продуктов.", description = "В ответе возвращается список " +
@@ -40,15 +72,6 @@ public class DynamicRulesController {
     @GetMapping
     public List<Recommendation> getAllRecommendations() {
         return dynamicRulesService.getAllProductsWithDynamicRule();
-    }
-
-    @Operation(summary = "Удаление из базы данных банковского продукта по его ID.")
-    @DeleteMapping("{productId}")
-    public void deleteRecommendation(@Parameter(
-            description = "ID продукта, который хотим удалить из базы.",
-            required = true)
-                                     @PathVariable UUID productId) {
-        dynamicRulesService.deleteProductWithDynamicRule(productId);
     }
 
     @Operation(summary = "Статистика срабатывания правил рекомендаций.", description = "Позволяет получить информацию " +
