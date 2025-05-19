@@ -1,35 +1,61 @@
 package org.skypro.banking_service.controller;
 
-import org.skypro.banking_service.model.Recommendations;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.skypro.banking_service.model.Recommendation;
+import org.skypro.banking_service.dto.StatisticsDTO;
+import org.skypro.banking_service.dto.StatisticsResponse;
 import org.skypro.banking_service.service.DynamicRulesService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Управление банковскими продуктами.", description = "Все необходимые операции над банковскими продуктами: " +
+        "добавление, удаление, получение полного списка, а также статистика.")
 @RestController
 @RequestMapping("/rule")
 public class DynamicRulesController {
+
     private final DynamicRulesService dynamicRulesService;
 
     public DynamicRulesController(DynamicRulesService dynamicRulesService) {
         this.dynamicRulesService = dynamicRulesService;
     }
 
+    @Operation(summary = "Добавление нового банковского продукта в базу данных.", description = "В ответе возвращается " +
+            "информация о добавленном банковском продукте, со следующими полями productId, productName, productText и queries.")
     @PostMapping
-    public Recommendations createRecommendation(@RequestBody Recommendations recommendation) {
-        return dynamicRulesService.addRecommendationByRule(recommendation);
+    public Recommendation createRecommendation(@Parameter(
+            description = "Информация о новом продукте, который хотим добавить в базу.",
+            required = true)
+                                               @RequestBody Recommendation recommendation) {
+        return dynamicRulesService.addProductWithDynamicRule(recommendation);
     }
 
+    @Operation(summary = "Получение списка всех банковских продуктов.", description = "В ответе возвращается список " +
+            "банковских продуктов, которые есть в базе данных.")
     @GetMapping
-    public List<Recommendations> getAllRecommendations() {
-        return dynamicRulesService.getAllRecommendationByRule();
+    public List<Recommendation> getAllRecommendations() {
+        return dynamicRulesService.getAllProductsWithDynamicRule();
     }
 
+    @Operation(summary = "Удаление из базы данных банковского продукта по его ID.")
     @DeleteMapping("{productId}")
-    public void deleteRecommendation(@PathVariable UUID productId) {
-        dynamicRulesService.deleteRecommendationByRule(productId);
+    public void deleteRecommendation(@Parameter(
+            description = "ID продукта, который хотим удалить из базы.",
+            required = true)
+                                     @PathVariable UUID productId) {
+        dynamicRulesService.deleteProductWithDynamicRule(productId);
     }
 
-
+    @Operation(summary = "Статистика срабатывания правил рекомендаций.", description = "Позволяет получить информацию " +
+            "о том, как часто срабатывают динамические правила рекомендаций для клиентов банка.")
+    @GetMapping("/stats")
+    public ResponseEntity<StatisticsResponse> getStats() {
+        List<StatisticsDTO> stats = dynamicRulesService.getStatistics();
+        return ResponseEntity.ok(new StatisticsResponse(stats));
+    }
 }

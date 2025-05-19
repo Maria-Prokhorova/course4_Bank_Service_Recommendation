@@ -22,19 +22,32 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
         this.cache = cache;
     }
 
+    /**
+     * Метод находит список продуктов используемый клиентом.
+     *
+     * @param userId - id клиента.
+     * @return список найденных банковских продуктов.
+     */
     @Override
     public List<String> findUsedProductTypesByUserId(UUID userId) {
         return cache.userTypeProductCache.get(userId, id -> {
             String sql = """
-                SELECT DISTINCT p.type
-                FROM transactions t
-                JOIN products p ON t.product_id = p.id
-                WHERE t.user_id = ?
-                """;
+                    SELECT DISTINCT p.type
+                    FROM transactions t
+                    JOIN products p ON t.product_id = p.id
+                    WHERE t.user_id = ?
+                    """;
             return jdbcTemplate.queryForList(sql, String.class, id);
         });
     }
 
+    /**
+     * Метод проверяет использование клиентом заданного продукта.
+     *
+     * @param userId      - id клиента.
+     * @param productType - тип банковского продукта.
+     * @return булевое значение: true - если продукт использовался, false - если нет.
+     */
     @Override
     public boolean existsUserProductByType(UUID userId, String productType) {
         UserProductKey key = new UserProductKey(userId, productType);
@@ -49,20 +62,31 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
             return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, userId,
                     productType));
         });
-        // Проверяем пользовался ли user инвест продуктом
     }
 
+    /**
+     * Метод поверяет наличие клиента с заданным Id.
+     *
+     * @param userId - id клиента.
+     * @return булевое значение: true - если клиент в базе существует, false - если нет.
+     */
     @Override
     public boolean userExists(UUID userId) {
         String sql = """
-                SELECT COUNT(*) > 0 
-                FROM users 
+                SELECT COUNT(*) > 0
+                FROM users
                 WHERE id = ?
                 """;
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, userId));
-        // Поверяет наличие пользователя с заданным userId
     }
 
+    /**
+     * Метод подсчитывает количество транзакций у клиента по заданному типу продукта.
+     *
+     * @param userId      - id клиента.
+     * @param productType - тип банковского продукта.
+     * @return количество транзакций.
+     */
     @Override
     public int countTransactionsByUserIdAndProductType(UUID userId, String productType) {
         String sql = """
@@ -73,8 +97,16 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
                   AND p.type = ?
                 """;
         return jdbcTemplate.queryForObject(sql, Integer.class, userId, productType);
-        // Подсчитывает количество транзакций пользователя по заданному типу продукта
     }
+
+    /**
+     * Метод возвращает общую сумму транзакций клиента по заданному типу продукта и типу транзакции.
+     *
+     * @param userId          - id клиента.
+     * @param productType     - тип банковского продукта.
+     * @param transactionType - типу транзакции.
+     * @return сумма транзакций.
+     */
     @Override
     public long findTotalAmountByUserIdAndProductTypeAndTransactionType(
             UUID userId, String productType, String transactionType) {
@@ -90,9 +122,15 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
                     """;
             return jdbcTemplate.queryForObject(sql, Long.class, k.userId(), k.productType(), k.transactionType());
         });
-        // Возвращает общую сумму транзакций пользователя по заданному типу продукта и типу транзакции.
     }
 
+    /**
+     * Метод проверяет существование клиента в базе данных.
+     *
+     * @param username - никнейм клиента.
+     * @return если клиент в БД существует, то вернет ID клиента,
+     * если клиент в БД не найден или установлено больше одного совпадения никнейма клиента, то вернет Optional.empty().
+     */
     @Override
     public Optional<UUID> findUserIdByUsername(String username) {
         String sql = "SELECT id FROM users WHERE username = ?";
@@ -102,16 +140,22 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
         } else {
             return Optional.empty();
         }
-        // вернёт Optional.empty() если пользователь не найден или найдено больше одного.
     }
 
+    /**
+     * Метод проверяет существование клиента в базе данных.
+     *
+     * @param username - никнейм клиента.
+     * @return если клиент в БД существует, то фамилию и имя клиента,
+     * * если клиент в БД не найден или установлено больше одного совпадения никнейма клиента, то вернет Optional.empty().
+     */
     @Override
     public Optional<UserFullName> findUserFullNameByUsername(String username) {
         String sql = """
-        SELECT id, first_name, last_name
-        FROM users
-        WHERE username = ?
-        """;
+                SELECT id, first_name, last_name
+                FROM users
+                WHERE username = ?
+                """;
 
         List<UserFullName> users = jdbcTemplate.query(sql, (rs, rowNum) ->
                 new UserFullName(

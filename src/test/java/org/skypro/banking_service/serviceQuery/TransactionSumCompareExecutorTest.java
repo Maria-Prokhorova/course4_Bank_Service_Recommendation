@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
-import org.skypro.banking_service.ruleSystem.dynamicRulesSystem.TransactionSumCompareExecutor;
-import org.skypro.banking_service.ruleSystem.dynamicRulesSystem.argumets.TransactionCompareFourArgument;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.TransactionSumCompareExecutor;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -35,28 +34,28 @@ public class TransactionSumCompareExecutorTest {
     private TransactionSumCompareExecutor transactionSumCompareExecutor;
 
     @Test
-    void shouldReturnResultOfSupportsTrue() {
+    void shouldReturnResultOfCheckOutNameQueryTrue() {
         String queryTest = "TRANSACTION_SUM_COMPARE";
-        boolean result = transactionSumCompareExecutor.supports(queryTest);
+        boolean result = transactionSumCompareExecutor.checkOutNameQuery(queryTest);
         assertTrue(result);
     }
 
     @Test
-    void shouldReturnResultOfSupportsFalse() {
+    void shouldReturnResultOfCheckOutNameQueryFalse() {
         String queryTest = "TRANSACTION_COMPARE";
-        boolean result = transactionSumCompareExecutor.supports(queryTest);
+        boolean result = transactionSumCompareExecutor.checkOutNameQuery(queryTest);
         assertFalse(result);
     }
 
     @Test
-    void shouldReturnResultOfEvaluateTrue() {
+    void shouldReturnResultOfCheckOutQueryTrue() {
         when(userTransactionRepository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
                 testUserId,
                 productType,
                 transactionType
         )).thenReturn(20000L);
 
-        boolean result = transactionSumCompareExecutor.evaluate(
+        boolean result = transactionSumCompareExecutor.checkOutQuery(
                 testUserId,
                 listArguments,
                 true
@@ -66,14 +65,14 @@ public class TransactionSumCompareExecutorTest {
     }
 
     @Test
-    void shouldReturnResultOfEvaluateFalse() {
+    void shouldReturnResultOfCheckOutQueryFalse() {
         when(userTransactionRepository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
                 testUserId,
                 productType,
                 transactionType
         )).thenReturn(5000L);
 
-        boolean result = transactionSumCompareExecutor.evaluate(
+        boolean result = transactionSumCompareExecutor.checkOutQuery(
                 testUserId,
                 listArguments,
                 true

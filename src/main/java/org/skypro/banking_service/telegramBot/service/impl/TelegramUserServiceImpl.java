@@ -1,6 +1,6 @@
 package org.skypro.banking_service.telegramBot.service.impl;
 
-import org.skypro.banking_service.telegramBot.Repository.TelegramUserRepository;
+import org.skypro.banking_service.telegramBot.repository.TelegramUserRepository;
 import org.skypro.banking_service.telegramBot.model.TelegramUser;
 import org.skypro.banking_service.telegramBot.service.TelegramUserService;
 import org.springframework.stereotype.Service;

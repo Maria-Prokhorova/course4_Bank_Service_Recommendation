@@ -33,14 +33,15 @@ CREATE TABLE query_arguments
 );
 
 -- changeset krasnovvg:4
--- Таблица для телеграмм бота
-CREATE TABLE rule_stat
+-- Таблица для сбора статистики
+CREATE TABLE statistics
 (
     rule_id UUID PRIMARY KEY,
     count   BIGINT NOT NULL DEFAULT 0
 );
 
 -- changeset krasnovvg:5
+-- Таблица для телеграм-бота
 CREATE TABLE telegram_user
 (
     chat_id  BIGINT PRIMARY KEY,

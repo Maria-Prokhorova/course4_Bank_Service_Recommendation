@@ -4,9 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
-import org.skypro.banking_service.ruleSystem.dynamicRulesSystem.TransactionSumCompareDepositWithdrawExecutor;
-import org.skypro.banking_service.ruleSystem.dynamicRulesSystem.argumets.TransactionCompareTwoArguments;
-import org.skypro.banking_service.ruleSystem.dynamicRulesSystem.enums.Operator;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.TransactionSumCompareDepositWithdrawExecutor;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.enums.Operator;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.skypro.banking_service.constants.TransactionTypeConstants.DEPOSIT;
 import static org.skypro.banking_service.constants.TransactionTypeConstants.WITHDRAW;
-import static org.skypro.banking_service.ruleSystem.dynamicRulesSystem.enums.Operator.LT;
+import static org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.enums.Operator.LT;
 
 @SpringBootTest
 public class TransactionSumCompareDepositWithdrawExecutorTest {
@@ -34,21 +33,21 @@ public class TransactionSumCompareDepositWithdrawExecutorTest {
     private TransactionSumCompareDepositWithdrawExecutor transactionSumCompareDepositWithdrawExecutor;
 
     @Test
-    void shouldReturnResultOfSupportsTrue() {
+    void shouldReturnResultOfCheckOutNameQueryTrue() {
         String queryTest = "TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW";
-        boolean result = transactionSumCompareDepositWithdrawExecutor.supports(queryTest);
+        boolean result = transactionSumCompareDepositWithdrawExecutor.checkOutNameQuery(queryTest);
         assertTrue(result);
     }
 
     @Test
-    void shouldReturnResultOfSupportsFalse() {
+    void shouldReturnResultOfCheckOutNameQueryFalse() {
         String queryTest = "COMPARE_DEPOSIT_WITHDRAW";
-        boolean result = transactionSumCompareDepositWithdrawExecutor.supports(queryTest);
+        boolean result = transactionSumCompareDepositWithdrawExecutor.checkOutNameQuery(queryTest);
         assertFalse(result);
     }
 
     @Test
-    void shouldReturnResultOfEvaluateTrue() {
+    void shouldReturnResultOfCheckOutQueryTrue() {
         when(userTransactionRepository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
                 testUserId,
                 productTypeFirst,
@@ -61,7 +60,7 @@ public class TransactionSumCompareDepositWithdrawExecutorTest {
                 WITHDRAW
         )).thenReturn(10000L);
 
-        boolean result = transactionSumCompareDepositWithdrawExecutor.evaluate(
+        boolean result = transactionSumCompareDepositWithdrawExecutor.checkOutQuery(
                 testUserId,
                 listArguments,
                 true
@@ -71,7 +70,7 @@ public class TransactionSumCompareDepositWithdrawExecutorTest {
     }
 
     @Test
-    void shouldReturnResultOfEvaluateFalse() {
+    void shouldReturnResultOfCheckOutQueryFalse() {
         when(userTransactionRepository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
                 testUserId,
                 productTypeFirst,
@@ -84,7 +83,7 @@ public class TransactionSumCompareDepositWithdrawExecutorTest {
                 WITHDRAW
         )).thenReturn(20000L);
 
-        boolean result = transactionSumCompareDepositWithdrawExecutor.evaluate(
+        boolean result = transactionSumCompareDepositWithdrawExecutor.checkOutQuery(
                 testUserId,
                 listArguments,
                 true
