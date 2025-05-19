@@ -79,7 +79,6 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
      */
     @Override
     public void deleteProductWithDynamicRule(UUID productId) {
-
         // Валидация данных
         Recommendation recommendation = validateProductId(productId);
 
@@ -109,7 +108,7 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
     }
 
     /**
-     * Внутреннй метод проверки валидности данных: проверяет существование рекомендации с указанным id в БД.
+     * Внутренний метод проверки валидности данных: проверяет существование рекомендации с указанным id в БД.
      *
      * @param productId - id рекомендации.
      * @return возвращает искомую рекомендацию, в случае существования указанного id.
@@ -124,7 +123,7 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
     }
 
     /**
-     * Внутреннй метод проверки валидности данных: проверяет кол-во введеных запросов в динамическом правиле,
+     * Внутренний метод проверки валидности данных: проверяет кол-во введенных запросов в динамическом правиле,
      * название запроса, название продукта, название транзакции.
      *
      * @param recommendation - информация о динамическом правиле рекомендации и рекомендуемом продукте.

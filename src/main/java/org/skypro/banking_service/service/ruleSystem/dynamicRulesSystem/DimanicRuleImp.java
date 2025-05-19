@@ -18,25 +18,25 @@ public class DimanicRuleImp implements DimanicRule {
     }
 
     /**
+     * Метод проверяет все запросы, которые есть в динамических правилах заданному клиенту.
      *
-     *
-     * @param queries
-     * @param userId
+     * @param queryRules
+     * @param userId - id клиента.
      * @return
      */
     @Override
-    public boolean checkOutDinamicRule(QueryRules queries, UUID userId) {
-        if (queries == null || userId == null) {
+    public boolean checkOutDinamicRule(QueryRules queryRules, UUID userId) {
+        if (queryRules == null || userId == null) {
             throw new QueryEvaluationException("Condition and userId cannot be null");
         }
 
         // Находим подходящий обработчик запросов (система поддерживает 4 типа запросов)
         DimanicQueryExecutor executor = executors.stream()
-                .filter(e -> e.checkOutNameQuery(queries.getQuery()))
+                .filter(e -> e.checkOutNameQuery(queryRules.getQuery()))
                 .findFirst()
-                .orElseThrow(() -> new QueryEvaluationException("No executor for query: " + queries.getQuery()));
+                .orElseThrow(() -> new QueryEvaluationException("No executor for query: " + queryRules.getQuery()));
 
-        return executor.checkOutQuery(userId, queries.getArguments(), queries.isNegate());
+        return executor.checkOutQuery(userId, queryRules.getArguments(), queryRules.isNegate());
     }
 }
 
