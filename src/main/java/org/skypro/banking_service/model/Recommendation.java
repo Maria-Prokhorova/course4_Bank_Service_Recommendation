@@ -1,6 +1,7 @@
 package org.skypro.banking_service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "recommendations")
+@Schema(description = "Банковский продукт с динамическими правилами")
 public class Recommendation {
 
     @Id
@@ -17,12 +19,15 @@ public class Recommendation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Schema(description = "ID продукта", example = "cd515076-5d8a-44be-930e-8d4fcb79f42d")
     @Column(name = "product_id")
     private UUID productId;
 
+    @Schema(description = "Название продукта")
     @Column(name = "product_name")
     private String productName;
 
+    @Schema(description = "Описание продукта")
     @Column(name = "product_text")
     private String productText;
 

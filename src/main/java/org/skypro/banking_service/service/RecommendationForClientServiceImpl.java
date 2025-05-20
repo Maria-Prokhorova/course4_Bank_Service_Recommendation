@@ -35,14 +35,17 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
         this.monitoringStatistics = monitoringStatistics;
     }
 
-
     /**
-     * Возвращает рекомендации по новым банковским продуктам на основе как статических, так и динамических правил.
-     * Метод предварительно проверяет наличие пользователя в системе.
+     * Метод позволяет получить рекомендации банковских продуктов для заданного клиента.
+     * Рекомендации формируются по продуктам со статическими и динамическими правилами.
+     * Метод предварительно проверяет наличие клиента в БД.
+     *
+     * @param userId - id клиента.
+     * @return - список рекомендаций.
      */
     @Override
     public RecommendationResponse getRecommendationsForClient(UUID userId) {
-        //Валидация данных
+        //Валидация данных (проверка id клиента)
         validateUserExists(userId);
 
         List<RecommendationDTO> result = new ArrayList<>();
@@ -55,8 +58,8 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
     /**
      * Внутренний метод для проверки валидности данных: проверяет существование клиента в БД.
      *
-     * @param userId - идентификатор клиента.
-     * @throws UserNotFoundException если клиент с заданным Id в БД не найдет.
+     * @param userId - id клиента.
+     * @throws UserNotFoundException, если клиент с заданным Id в БД не найдет.
      */
     private void validateUserExists(UUID userId) {
         if (!userTransactionRepository.userExists(userId)) {
@@ -65,11 +68,13 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
     }
 
     /**
-     * Получает список рекомендаций по статическим правилам (встроенные Java-реализации).
-     * Каждое правило проверяет, подходит ли оно данному пользователю, и при успешной проверке
-     * возвращает DTO рекомендации.
+     * Внутренний метод, который позволяет получить рекомендации продуктов со статическими правилами для заданного клиента.
+     * Выполняется проверка по каждому продукту со статическим правилом (всего в системе описано три продукта:
+     * Invest500, SimpleCredit, TopSaving), в случае успешной проверки продукт попадает в рекомендации.
+     *
+     * @param userId - id клиента.
+     * @return - список рекомендаций.
      */
-
     private List<RecommendationDTO> getStaticRecommendations(UUID userId) {
         List<RecommendationDTO> recommend = new ArrayList<>();
         for (StaticRule rule : staticRules) {
@@ -81,21 +86,28 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
     }
 
     /**
-     * Получает список рекомендаций, основанных на динамических правилах из базы данных.
-     * У каждой рекомендации может быть один или несколько связанных запросов (queries).
-     * Все условия должны быть выполнены, чтобы рекомендация считалась подходящей.
+     * Внутренний метод, который позволяет получить рекомендации продуктов с динамическими правилами для заданного клиента.
+     * В динамическом правиле каждого продукта есть три запроса (queries). Для того, что бы продукт попал в
+     * рекомендацию должны выполняться условия всех запросов.
+     *
+     * @param userId id клиента.
+     * @return - список рекомендаций.
      */
     private List<RecommendationDTO> getDynamicRecommendations(UUID userId) {
         List<RecommendationDTO> validRecommendations = new ArrayList<>();
-        Map<Recommendation, List<QueryRules>> queriesByRecommendation = groupQueriesByRecommendation();
+        // Создаем мапу <продукт, его запросы>
+        Map<Recommendation, List<QueryRules>> queriesByRecommendation = groupQueriesWithProduct();
 
+        // В цикле проходимся по всем элементам мапы
         for (Map.Entry<Recommendation, List<QueryRules>> entry : queriesByRecommendation.entrySet()) {
             Recommendation recommendation = entry.getKey();
             List<QueryRules> queries = entry.getValue();
 
-            if (allConditionsAreSatisfied(queries, userId)) {
+            // Проверяем выполнения условий для всех запросов продукта
+            if (checkOutAllQueriesByDymanicRule(queries, userId)) {
                 validRecommendations.add(convertToDto(recommendation));
 
+                // Увеличиваем счетчик срабатывания рекомендаций для статистики
                 monitoringStatistics.incrementCounter(recommendation.getProductId());
             }
         }
@@ -103,12 +115,16 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
     }
 
     /**
-     * Группирует все запросы (queries) из БД по объектам.
+     * Внутренний метод, который позволяет сгруппировать все запросы (queries) с соответствующими им продуктами в единый объект.
+     *
+     * @return - возвращается мапу <продукт, его запросы>.
      */
-    private Map<Recommendation, List<QueryRules>> groupQueriesByRecommendation() {
+    private Map<Recommendation, List<QueryRules>> groupQueriesWithProduct() {
+        // Получаем все запросы из БД
         List<QueryRules> allQueries = queryRepository.findAll();
         Map<Recommendation, List<QueryRules>> grouped = new HashMap<>();
 
+        // Проходимся в цикле по всем запросам и сохраняем их в мапу, где ключом выступает продукт, а значением список его запросов
         for (QueryRules queryRules : allQueries) {
             Recommendation recommendation = queryRules.getRecommendation();
             grouped.computeIfAbsent(recommendation, k -> new ArrayList<>()).add(queryRules);
@@ -117,14 +133,16 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
     }
 
     /**
-     * Проверяет, выполняются ли все условия (queries) динамической рекомендации
-     * для конкретного пользователя.
+     * Внутренний метод, который выполняет проверку соблюдения условий всех запросов (queries) в динамическом правиле
+     * для конкретного клиента.
      *
-     * @param queries Список условий.
-     * @param userId  Идентификатор пользователя.
-     * @return true, если все условия удовлетворены; false — иначе.
+     * @param queries - список запросов.
+     * @param userId  - id клиента.
+     * @return булевое значение: true, если все условия удовлетворены; false — иначе.
      */
-    private boolean allConditionsAreSatisfied(List<QueryRules> queries, UUID userId) {
+    private boolean checkOutAllQueriesByDymanicRule(List<QueryRules> queries, UUID userId) {
+        // Проходимся в цикле по всем запросам. Для каждого запроса вызываем метод, который сначала подбирает нужный
+        // обработчик запроса, а затем проверяет выполнение условий запроса
         for (QueryRules queryRules : queries) {
             if (!dimanicRule.checkOutDinamicRule(queryRules, userId)) {
                 return false;
@@ -134,7 +152,7 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
     }
 
     /**
-     * Преобразует сущность {@link Recommendation} в DTO {@link RecommendationDTO}.
+     * Внутренний метод, который преобразует сущность {@link Recommendation} в DTO {@link RecommendationDTO}.
      * Используется для возврата клиенту только нужных данных.
      */
     private RecommendationDTO convertToDto(Recommendation recommendation) {
