@@ -14,11 +14,23 @@ public class TelegramUserServiceImpl implements TelegramUserService {
         this.repository = repository;
     }
 
+    /**
+     * Метод проверяет существование чата в БД.
+     *
+     * @param chatId - id чата.
+     * @return булевое значение: true или false.
+     */
     @Override
     public boolean isFirstTime(Long chatId) {
         return !repository.existsByChatId(chatId);
     }
 
+    /**
+     * Метод регистрирует нового пользователя в БД.
+     *
+     * @param chatId   - id чата.
+     * @param username - имя пользователя.
+     */
     @Override
     public void register(Long chatId, String username) {
         if (!repository.existsByChatId(chatId)) {

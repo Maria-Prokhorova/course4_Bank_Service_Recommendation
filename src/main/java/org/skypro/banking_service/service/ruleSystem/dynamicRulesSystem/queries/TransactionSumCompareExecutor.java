@@ -1,7 +1,7 @@
 package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries;
 
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.arguments.TransactionCompareFourArgument;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.parameter.TransactionCompareFourArgument;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

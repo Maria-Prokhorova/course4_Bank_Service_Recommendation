@@ -3,6 +3,7 @@ package org.skypro.banking_service.serviceQuery;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.skypro.banking_service.constants.ConstantsForDynamicRules;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.TransactionSumCompareDepositWithdrawExecutor;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.enums.Operator;
@@ -14,8 +15,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import static org.skypro.banking_service.constants.TransactionTypeConstants.DEPOSIT;
-import static org.skypro.banking_service.constants.TransactionTypeConstants.WITHDRAW;
 import static org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.enums.Operator.LT;
 
 @SpringBootTest
@@ -51,13 +50,13 @@ public class TransactionSumCompareDepositWithdrawExecutorTest {
         when(userTransactionRepository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
                 testUserId,
                 productTypeFirst,
-                DEPOSIT
+                String.valueOf(ConstantsForDynamicRules.TypeTransaction.DEPOSIT)
         )).thenReturn(20000L);
 
         when(userTransactionRepository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
                 testUserId,
                 productTypeFirst,
-                WITHDRAW
+                String.valueOf(ConstantsForDynamicRules.TypeTransaction.WITHDRAW)
         )).thenReturn(10000L);
 
         boolean result = transactionSumCompareDepositWithdrawExecutor.checkOutQuery(
@@ -74,13 +73,13 @@ public class TransactionSumCompareDepositWithdrawExecutorTest {
         when(userTransactionRepository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
                 testUserId,
                 productTypeFirst,
-                DEPOSIT
+                String.valueOf(ConstantsForDynamicRules.TypeTransaction.DEPOSIT)
         )).thenReturn(10000L);
 
         when(userTransactionRepository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
                 testUserId,
                 productTypeFirst,
-                WITHDRAW
+                String.valueOf(ConstantsForDynamicRules.TypeTransaction.WITHDRAW)
         )).thenReturn(20000L);
 
         boolean result = transactionSumCompareDepositWithdrawExecutor.checkOutQuery(
