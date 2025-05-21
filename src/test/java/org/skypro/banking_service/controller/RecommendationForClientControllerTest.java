@@ -1,23 +1,24 @@
 package org.skypro.banking_service.controller;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.skypro.banking_service.dto.RecommendationDTO;
 import org.skypro.banking_service.dto.RecommendationResponse;
+import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.service.RecommendationForClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(RecommendationForClientController.class)
 class RecommendationForClientControllerTest {
@@ -25,31 +26,48 @@ class RecommendationForClientControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private RecommendationForClientService recommendationForClientService;
 
     @Test
-    void getRecommendations_shouldReturnResponse() throws Exception {
+    @DisplayName("GET /recommendation/{userId} - success")
+    void testGetRecommendationsSuccess() throws Exception {
         UUID userId = UUID.randomUUID();
-        RecommendationDTO dto = new RecommendationDTO(
-                "Product 1",
-                "prod",
-                "Выбери этот продукт"
-        );
+        RecommendationDTO rec1 = new RecommendationDTO(
+                "Invest500",
+                "1",
+                "Инвестируйте 500 рублей в месяц");
+        RecommendationDTO rec2 = new RecommendationDTO(
+                "TopSaving",
+                "2",
+                "Лучшие условия для накоплений");
 
-        RecommendationResponse response = new RecommendationResponse();
-        response.setUserId(userId);
-        response.setRecommendations(List.of(dto));
+        RecommendationResponse mockResponse = new RecommendationResponse(userId, List.of(rec1, rec2));
 
-        when(recommendationForClientService.getRecommendationsForClient(userId)).thenReturn(response);
+
+        when(recommendationForClientService.getRecommendationsForClient(userId))
+                .thenReturn(mockResponse);
 
         mockMvc.perform(get("/recommendation/{userId}", userId))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.userId").value(userId.toString()))
-                .andExpect(jsonPath("$.recommendation", hasSize(1)))
-                .andExpect(jsonPath("$.recommendation[0].id").value("prod"))
-                .andExpect(jsonPath("$.recommendation[0].name").value("Product 1"))
-                .andExpect(jsonPath("$.recommendation[0].text").value("Выбери этот продукт"));
+                .andExpect(jsonPath("$.recommendations[0].name").value("Invest500"))
+                .andExpect(jsonPath("$.recommendations[1].name").value("TopSaving"));
     }
 
+    @Test
+    @DisplayName("GET /recommendation/{userId} - user not found")
+    void testGetRecommendationsUserNotFound() throws Exception {
+        UUID userId = UUID.randomUUID();
+
+        when(recommendationForClientService.getRecommendationsForClient(userId))
+                .thenThrow(new UserNotFoundException(userId));
+
+        mockMvc.perform(get("/recommendation/{userId}", userId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("Клиент с id = " + userId + " в базе данных не найден."))
+                );
+    }
 }
+
