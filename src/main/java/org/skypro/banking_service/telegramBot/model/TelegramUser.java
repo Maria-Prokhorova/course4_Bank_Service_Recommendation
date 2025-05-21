@@ -11,11 +11,11 @@ public class TelegramUser {
     @Id
     private Long chatId;
 
-    private String username;
+    private String userName;
 
-    public TelegramUser(Long chatId, String username) {
+    public TelegramUser(Long chatId, String userName) {
         this.chatId = chatId;
-        this.username = username;
+        this.userName = userName;
     }
 
     public TelegramUser() {

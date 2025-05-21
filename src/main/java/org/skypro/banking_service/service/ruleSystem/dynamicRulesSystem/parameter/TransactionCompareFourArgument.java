@@ -1,4 +1,4 @@
-package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.arguments;
+package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.parameter;
 
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.enums.Operator;
 

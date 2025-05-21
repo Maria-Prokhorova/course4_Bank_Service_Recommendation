@@ -1,11 +1,9 @@
 package org.skypro.banking_service.service.ruleSystem.statickRulesSystem;
 
+import org.skypro.banking_service.constants.ConstantsForDynamicRules;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.parameter.StaticRuleParameters;
 import org.springframework.stereotype.Service;
-
-import static org.skypro.banking_service.constants.TransactionTypeConstants.DEPOSIT;
-import static org.skypro.banking_service.constants.TransactionTypeConstants.WITHDRAW;
 
 @Service
 public class StaticQueryExecutorImpl implements StaticQueryExecutor {
@@ -38,7 +36,7 @@ public class StaticQueryExecutorImpl implements StaticQueryExecutor {
     @Override
     public boolean isAmountDepositMoreLimit(StaticRuleParameters params) {
         return repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
-                params.userId(), params.typeProduct1(), DEPOSIT) > params.limit();
+                params.userId(), params.typeProduct1(), String.valueOf(ConstantsForDynamicRules.TypeTransaction.DEPOSIT)) > params.limit();
     }
 
     /**
@@ -51,9 +49,9 @@ public class StaticQueryExecutorImpl implements StaticQueryExecutor {
     @Override
     public boolean isAmountSeveralDepositsMoreOrEqualsLimit(StaticRuleParameters params) {
         long debitDeposits = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
-                params.userId(), params.typeProduct1(), DEPOSIT);
+                params.userId(), params.typeProduct1(), String.valueOf(ConstantsForDynamicRules.TypeTransaction.DEPOSIT));
         long savingDeposits = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
-                params.userId(), params.typeProduct2(), DEPOSIT);
+                params.userId(), params.typeProduct2(), String.valueOf(ConstantsForDynamicRules.TypeTransaction.DEPOSIT));
         return debitDeposits >= params.limit() || savingDeposits >= params.limit();
     }
 
@@ -67,7 +65,7 @@ public class StaticQueryExecutorImpl implements StaticQueryExecutor {
     @Override
     public boolean isAmountWithdrawMoreLimit(StaticRuleParameters params) {
         return repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
-                params.userId(), params.typeProduct1(), WITHDRAW) > params.limit();
+                params.userId(), params.typeProduct1(), String.valueOf(ConstantsForDynamicRules.TypeTransaction.WITHDRAW)) > params.limit();
     }
 
     /**
@@ -80,9 +78,9 @@ public class StaticQueryExecutorImpl implements StaticQueryExecutor {
     @Override
     public boolean isAmountDepositsMoreThanWithdrawals(StaticRuleParameters params) {
         long debitDeposits = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
-                params.userId(), params.typeProduct1(), DEPOSIT);
+                params.userId(), params.typeProduct1(), String.valueOf(ConstantsForDynamicRules.TypeTransaction.DEPOSIT));
         long debitWithdrawals = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
-                params.userId(), params.typeProduct1(), WITHDRAW);
+                params.userId(), params.typeProduct1(), String.valueOf(ConstantsForDynamicRules.TypeTransaction.WITHDRAW));
         return debitDeposits > debitWithdrawals;
     }
 }

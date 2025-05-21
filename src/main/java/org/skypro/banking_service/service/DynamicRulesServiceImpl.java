@@ -55,7 +55,7 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
             queries.setRecommendation(recommendation);
         }
 
-        //Валидация данных
+        //Валидация данных (проверяем корректность введенных данных)
         validateData(recommendation);
         logger.info("Was invoked method for create recommendation.");
         return recommendationRepository.save(recommendation);
@@ -79,10 +79,12 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
      */
     @Override
     public void deleteProductWithDynamicRule(UUID productId) {
-        // Валидация данных
+        // Валидация данных (проверяем существование в БД продукта с таким id)
         Recommendation recommendation = validateProductId(productId);
 
         recommendationRepository.delete(recommendation);
+
+        // После удаление продукта из базы, удаляем этот продукт из статистики срабатывания рекомендаций
         monitoringStatistics.deleteRuleIdFromStatistics(recommendation.getProductId());
 
         logger.info("Deleted recommendation with productId: {} and cleared stats for ruleId: {}", productId, recommendation.getId());

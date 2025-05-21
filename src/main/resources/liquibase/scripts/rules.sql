@@ -45,5 +45,5 @@ CREATE TABLE statistics
 CREATE TABLE telegram_user
 (
     chat_id  BIGINT PRIMARY KEY,
-    username VARCHAR(255)
+    user_name VARCHAR(255)
 );

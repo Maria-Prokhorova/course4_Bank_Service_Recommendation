@@ -1,14 +1,13 @@
 package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries;
 
+import org.skypro.banking_service.constants.ConstantsForDynamicRules;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.arguments.TransactionCompareTwoArguments;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.parameter.TransactionCompareTwoArguments;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.skypro.banking_service.constants.TransactionTypeConstants.DEPOSIT;
-import static org.skypro.banking_service.constants.TransactionTypeConstants.WITHDRAW;
 import static org.skypro.banking_service.constants.ConstantsForDynamicRules.TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW;
 
 @Component
@@ -44,9 +43,9 @@ public class TransactionSumCompareDepositWithdrawExecutor implements DimanicQuer
         TransactionCompareTwoArguments parsed = TransactionCompareTwoArguments.from(arguments);
 
         long totalDeposit = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
-                userId, parsed.productType(), DEPOSIT);
+                userId, parsed.productType(), String.valueOf(ConstantsForDynamicRules.TypeTransaction.DEPOSIT));
         long totalWithdraw = repository.findTotalAmountByUserIdAndProductTypeAndTransactionType(
-                userId, parsed.productType(), WITHDRAW);
+                userId, parsed.productType(), String.valueOf(ConstantsForDynamicRules.TypeTransaction.WITHDRAW));
 
         boolean result = parsed.operator().compare(totalDeposit, totalWithdraw);
         return negate != result;
