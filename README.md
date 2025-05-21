@@ -6,27 +6,54 @@
 JDK 17,  
 Project Maven,  
 Spring Boot 3.4.5,  
-встраиваемая база данных H2 (файл transaction.mv.db)  
+встраиваемая база данных H2 (файл transaction.mv.db),
+база данных PostgreSQL,
+телеграмбот
 
 ### 2. Шаги развертывания. 
 #### *Установка зависимостей:*  
 модуль Spring Web,  
 JDBC-драйвер для работы с базой данных H2,  
+зависимость для работы с postgresql,
+зависимость для работы с jpa,
+зависимость для работы с liquibase,
 библиотека Lombok,  
 зависимость для работы со Swagger,  
-зависимости для тестирования приложения  
+зависимость для работы с springdoc-openapi,
+зависимости для тестирования приложения,
+библиотека Caffeine  для кеширования,
+зависимость для работы со Spring Cache,
+зависимости для работы с telegrambots 
 
 #### *Настройка конфигураций (application.properties)*
 
-server.port=8080  
-spring.datasource.url=jdbc:h2:file:./transaction  
-spring.datasource.driver-class-name=org.h2.Driver  
-spring.datasource.hikari.maximum-pool-size=1  
-spring.h2.console.enabled=true  
-spring.h2.console.path=/h2  
-spring.jpa.show-sql=true  
-spring.jpa.hibernate.ddl-auto=none  
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect  
+server.port=8080
+
+#Подключение одной базы данных
+spring.datasource.url=jdbc:postgresql://localhost:5432/BankService
+spring.datasource.username=***
+spring.datasource.password=***
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+#Подключение второй базы данных
+application.recommendations-db.url=jdbc:h2:file:./transaction
+
+#Настройка Hibernate
+spring.jpa.hibernate.ddl-auto= validate
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.default_schema=public
+
+#Подключение liquibase
+spring.liquibase.change-log=classpath:liquibase/changelog-master.yml
+
+#Настройка логирования
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+logging.level.org.springframework.data=TRACE
+
+#Подключение телеграмбота
+telegram.bot.token=***
+telegram.bot.username=***
 
 ### 3. Запуск приложения.
 #### *Команды для сборки приложения*
