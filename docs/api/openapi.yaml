@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+  title: Banking Service API
+  version: 1.0.0
+  description: API для управления банковскими продуктами, рекомендациями и системой.
+servers:
+  - url: http://localhost:8080
+    description: Локальный сервер разработки
+
+paths:
+  # ===== DynamicRulesController =====
+  /rule:
+    get:
+      tags:
+        - "Управление банковскими продуктами"
+      summary: Получение списка всех банковских продуктов
+      description: Возвращает список всех банковских продуктов из базы данных.
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recommendation'
+
+    post:
+      tags:
+        - "Управление банковскими продуктами"
+      summary: Добавление нового банковского продукта
+      description: Добавляет новый банковский продукт в базу данных.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recommendation'
+      responses:
+        '200':
+          description: Продукт успешно добавлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+        '400':
+          description: Некорректные данные продукта
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Новый банковский продукт имеет неверный формат динамического правила..."
+
+  /rule/{productId}:
+    delete:
+      tags:
+        - "Управление банковскими продуктами"
+      summary: Удаление банковского продукта по ID
+      description: Удаляет продукт из базы данных по его UUID.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Продукт успешно удалён
+        '404':
+          description: Продукт не найден
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Продукт с id = ... не найден."
+
+  /rule/stats:
+    get:
+      tags:
+        - "Управление банковскими продуктами"
+      summary: Статистика срабатывания правил рекомендаций
+      description: Возвращает статистику по динамическим правилам рекомендаций.
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsResponse'
+
+  # ===== ManagementController =====
+  /management/clear-caches:
+    post:
+      tags:
+        - "Управление системой"
+      summary: Сброс кеша рекомендаций
+      description: Очищает кеш рекомендаций.
+      responses:
+        '200':
+          description: Кеш успешно очищен
+
+  /management/info:
+    get:
+      tags:
+        - "Управление системой"
+      summary: Информация о системе
+      description: Возвращает название и версию системы.
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoDTO'
+
+  # ===== RecommendationForClientController =====
+  /recommendation/{userId}:
+    get:
+      tags:
+        - "Рекомендации для клиентов банка"
+      summary: Получение рекомендаций для клиента
+      description: Возвращает список рекомендаций банковских продуктов для клиента.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResponse'
+        '404':
+          description: Клиент не найден
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Клиент с id = ... не найден."
+
+# ===== Модели данных (Schemas) =====
+components:
+  schemas:
+    Recommendation:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+        productName:
+          type: string
+        productText:
+          type: string
+        queries:
+          type: array
+          items:
+            type: string
+      required:
+        - productName
+        - productText
+        - queries
+
+    StatisticsResponse:
+      type: object
+      properties:
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatisticsDTO'
+
+    StatisticsDTO:
+      type: object
+      properties:
+        ruleId:
+          type: string
+          format: uuid
+        ruleName:
+          type: string
+        triggerCount:
+          type: integer
+
+    InfoDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+
+    RecommendationResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        recommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recommendation'
