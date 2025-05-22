@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.exception.QueryEvaluationException;
 import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DimanicRuleImp;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DynamicRuleImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class DimanicRuleImpTest {
+public class DynamicRuleImpTest {
 
     private static final UUID testUserId = UUID.randomUUID();
     private final String productType = "DEBIT";
@@ -42,7 +42,7 @@ public class DimanicRuleImpTest {
     );
 
     @Autowired
-    private DimanicRuleImp dimanicRuleImp;
+    private DynamicRuleImp dimanicRuleImp;
 
     @Test
     void shouldResultOfCheckOutDinamicRuleEvaluationExceptionIfArgumentsNull() {

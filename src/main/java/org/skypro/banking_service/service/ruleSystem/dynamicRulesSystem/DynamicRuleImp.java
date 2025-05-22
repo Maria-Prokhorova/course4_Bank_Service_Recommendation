@@ -2,18 +2,18 @@ package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem;
 
 import org.skypro.banking_service.exception.QueryEvaluationException;
 import org.skypro.banking_service.model.QueryRules;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DimanicQueryExecutor;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DynamicQueryExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class DimanicRuleImp implements DimanicRule {
+public class DynamicRuleImp implements DynamicRule {
 
-    private final List<DimanicQueryExecutor> executors;
+    private final List<DynamicQueryExecutor> executors;
 
-    public DimanicRuleImp(List<DimanicQueryExecutor> executors) {
+    public DynamicRuleImp(List<DynamicQueryExecutor> executors) {
         this.executors = executors;
     }
 
@@ -33,7 +33,7 @@ public class DimanicRuleImp implements DimanicRule {
 
         // Находим подходящий обработчик запросов (система поддерживает 4 типа запросов),
         // в случае если ни один из обработчиков не подошел выбрасываем исключение
-        DimanicQueryExecutor executor = executors.stream()
+        DynamicQueryExecutor executor = executors.stream()
                 .filter(e -> e.checkOutNameQuery(queryRules.getQuery()))
                 .findFirst()
                 .orElseThrow(() -> new QueryEvaluationException("No executor for query: " + queryRules.getQuery()));

@@ -10,7 +10,7 @@ import java.util.UUID;
 import static org.skypro.banking_service.constants.ConstantsForDynamicRules.TRANSACTION_SUM_COMPARE;
 
 @Component
-public class TransactionSumCompareExecutor implements DimanicQueryExecutor {
+public class TransactionSumCompareExecutor implements DynamicQueryExecutor {
 
     private final UserTransactionRepository repository;
 
