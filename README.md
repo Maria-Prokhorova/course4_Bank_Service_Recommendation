@@ -17,8 +17,8 @@ JDBC-драйвер для работы с базой данных H2,
 зависимость для работы с postgresql,  
 зависимость для работы с jpa,  
 зависимость для работы с liquibase,  
-библиотека Lombok,   
-зависимость для работы со Swagger,   
+библиотека Lombok,  
+зависимость для работы со Swagger,  
 зависимость для работы с springdoc-openapi,  
 зависимости для тестирования приложения,  
 библиотека Caffeine  для кеширования,  
@@ -27,16 +27,16 @@ JDBC-драйвер для работы с базой данных H2,
 
 #### *Настройка конфигураций (application.properties)*
 
-server.port=8080  
+server.port=8080
 
-#Подключение одной базы данных  
-spring.datasource.url=jdbc:postgresql://localhost:5432/BankService  
-spring.datasource.username=***  
-spring.datasource.password=***  
-spring.datasource.driver-class-name=org.postgresql.Driver  
+#Подключение одной базы данных
+spring.datasource.url=jdbc:postgresql://localhost:5432/BankService
+spring.datasource.username=***
+spring.datasource.password=***
+spring.datasource.driver-class-name=org.postgresql.Driver
 
-#Подключение второй базы данных  
-application.recommendations-db.url=jdbc:h2:file:./transaction  
+#Подключение второй базы данных
+application.recommendations-db.url=jdbc:h2:file:./transaction
 
 #Настройка Hibernate  
 spring.jpa.hibernate.ddl-auto= validate  

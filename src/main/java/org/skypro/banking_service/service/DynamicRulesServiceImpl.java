@@ -9,7 +9,7 @@ import org.skypro.banking_service.model.Statistics;
 import org.skypro.banking_service.dto.StatisticsDTO;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationRepository;
 import org.skypro.banking_service.repositories.postgres.repository.StatisticsRepository;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DimanicQueryExecutor;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DynamicQueryExecutor;
 import org.skypro.banking_service.service.statistics.MonitoringStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +33,10 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
     private final RecommendationRepository recommendationRepository;
     private final StatisticsRepository statisticsRepository;
     private final MonitoringStatistics monitoringStatistics;
-    private final List<DimanicQueryExecutor> executors;
+    private final List<DynamicQueryExecutor> executors;
 
     public DynamicRulesServiceImpl(RecommendationRepository recommendationRepository,
-                                   StatisticsRepository statisticsRepository, MonitoringStatistics monitoringStatistics, List<DimanicQueryExecutor> executors) {
+                                   StatisticsRepository statisticsRepository, MonitoringStatistics monitoringStatistics, List<DynamicQueryExecutor> executors) {
         this.recommendationRepository = recommendationRepository;
         this.statisticsRepository = statisticsRepository;
         this.monitoringStatistics = monitoringStatistics;
@@ -143,7 +143,7 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
         query.forEach(q -> {
             try {
                 // Находим подходящий обработчик запросов (система поддерживает 4 типа запросов)
-                DimanicQueryExecutor executor = executors.stream()
+                DynamicQueryExecutor executor = executors.stream()
                         .filter(e -> e.checkOutNameQuery(q.getQuery()))
                         .findFirst()
                         .orElseThrow(() -> new QueryEvaluationException("No executor for query: " + q.getQuery()));

@@ -9,7 +9,7 @@ import java.util.UUID;
 import static org.skypro.banking_service.constants.ConstantsForDynamicRules.*;
 
 @Component
-public class UserOfExecutor implements DimanicQueryExecutor {
+public class UserOfExecutor implements DynamicQueryExecutor {
 
     private final UserTransactionRepository repository;
 

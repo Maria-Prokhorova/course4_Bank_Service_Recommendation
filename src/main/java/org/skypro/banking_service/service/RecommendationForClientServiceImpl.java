@@ -7,7 +7,7 @@ import org.skypro.banking_service.dto.RecommendationDTO;
 import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.repositories.postgres.repository.QueryRepository;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DimanicRule;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DynamicRule;
 import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.rules.StaticRule;
 import org.skypro.banking_service.service.statistics.MonitoringStatistics;
 import org.springframework.stereotype.Service;
@@ -22,14 +22,14 @@ import java.util.*;
 public class RecommendationForClientServiceImpl implements RecommendationForClientService {
 
     private final List<StaticRule> staticRules;
-    private final DimanicRule dimanicRule;
+    private final DynamicRule dynamicRule;
     private final UserTransactionRepository userTransactionRepository;
     private final QueryRepository queryRepository;
     private final MonitoringStatistics monitoringStatistics;
 
-    public RecommendationForClientServiceImpl(List<StaticRule> staticRules, DimanicRule dimanicRule, UserTransactionRepository userTransactionRepository, QueryRepository queryRepository, MonitoringStatistics monitoringStatistics) {
+    public RecommendationForClientServiceImpl(List<StaticRule> staticRules, DynamicRule dynamicRule, UserTransactionRepository userTransactionRepository, QueryRepository queryRepository, MonitoringStatistics monitoringStatistics) {
         this.staticRules = staticRules;
-        this.dimanicRule = dimanicRule;
+        this.dynamicRule = dynamicRule;
         this.userTransactionRepository = userTransactionRepository;
         this.queryRepository = queryRepository;
         this.monitoringStatistics = monitoringStatistics;
@@ -144,7 +144,7 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
         // Проходимся в цикле по всем запросам. Для каждого запроса вызываем метод, который сначала подбирает нужный
         // обработчик запроса, а затем проверяет выполнение условий запроса
         for (QueryRules queryRules : queries) {
-            if (!dimanicRule.checkOutDinamicRule(queryRules, userId)) {
+            if (!dynamicRule.checkOutDinamicRule(queryRules, userId)) {
                 return false;
             }
         }
