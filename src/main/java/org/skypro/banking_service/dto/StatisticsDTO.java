@@ -13,3 +13,4 @@ public record StatisticsDTO(
         @Schema(description = "Счетчик")
         Long count) {
 }
+
