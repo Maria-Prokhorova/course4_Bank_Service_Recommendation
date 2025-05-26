@@ -27,6 +27,14 @@ public class Statistics {
     public Statistics() {
     }
 
+    public void setRuleId(UUID ruleId) {
+        this.ruleId = ruleId;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
     public UUID getRuleId() {
         return ruleId;
     }
