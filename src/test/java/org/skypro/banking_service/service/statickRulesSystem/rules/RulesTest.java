@@ -1,4 +1,4 @@
-package org.skypro.banking_service.serviceTest;
+package org.skypro.banking_service.service.statickRulesSystem.rules;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

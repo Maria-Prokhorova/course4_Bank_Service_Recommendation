@@ -1,4 +1,4 @@
-package org.skypro.banking_service.serviceTest;
+package org.skypro.banking_service.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,10 +10,8 @@ import org.skypro.banking_service.exception.RecommendationNotFoundException;
 import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.model.Statistics;
-import org.skypro.banking_service.repositories.postgres.repository.QueryRepository;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationRepository;
 import org.skypro.banking_service.repositories.postgres.repository.StatisticsRepository;
-import org.skypro.banking_service.service.DynamicRulesServiceImpl;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DynamicQueryExecutor;
 import org.skypro.banking_service.service.statistics.MonitoringStatistics;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class DynamicStaticQueryRulesExecutorImplTest {
+public class DynamicRulesServiceImplTest {
 
     private final Recommendation first = new Recommendation(
             UUID.randomUUID(),
