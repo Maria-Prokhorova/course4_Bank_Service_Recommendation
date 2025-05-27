@@ -3,7 +3,7 @@ package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries
 import java.util.List;
 import java.util.UUID;
 
-public interface DimanicQueryExecutor {
+public interface DynamicQueryExecutor {
 
     // Метод проверяет тип запроса, соответствует ли он поддерживаемому системой (система обрабатывает всего 4 типа запросов).
     boolean checkOutNameQuery(String queryType);

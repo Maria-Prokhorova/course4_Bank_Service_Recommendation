@@ -128,24 +128,6 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
      * Метод проверяет существование клиента в базе данных.
      *
      * @param username - никнейм клиента.
-     * @return если клиент в БД существует, то вернет ID клиента,
-     * если клиент в БД не найден или установлено больше одного совпадения никнейма клиента, то вернет Optional.empty().
-     */
-    @Override
-    public Optional<UUID> findUserIdByUsername(String username) {
-        String sql = "SELECT id FROM users WHERE username = ?";
-        List<UUID> result = jdbcTemplate.queryForList(sql, UUID.class, username);
-        if (result.size() == 1) {
-            return Optional.of(result.get(0));
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    /**
-     * Метод проверяет существование клиента в базе данных.
-     *
-     * @param username - никнейм клиента.
      * @return если клиент в БД существует, то фамилию и имя клиента,
      * * если клиент в БД не найден или установлено больше одного совпадения никнейма клиента, то вернет Optional.empty().
      */

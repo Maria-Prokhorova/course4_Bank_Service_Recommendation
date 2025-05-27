@@ -45,6 +45,10 @@ public class QueryRules {
         this.recommendation = recommendation;
     }
 
+    public void setArguments(List<String> arguments) {
+        this.arguments = arguments;
+    }
+
     public String getQuery() {
         return query;
     }

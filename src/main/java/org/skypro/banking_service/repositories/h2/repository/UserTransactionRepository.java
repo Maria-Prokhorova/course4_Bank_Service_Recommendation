@@ -19,7 +19,5 @@ public interface UserTransactionRepository {
     long findTotalAmountByUserIdAndProductTypeAndTransactionType(
             UUID userId, String productType, String transactionType);
 
-    Optional<UUID> findUserIdByUsername(String username);
-
     Optional<UserFullName> findUserFullNameByUsername(String username);
 }

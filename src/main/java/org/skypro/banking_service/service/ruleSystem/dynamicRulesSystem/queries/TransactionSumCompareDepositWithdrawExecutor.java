@@ -11,7 +11,7 @@ import java.util.UUID;
 import static org.skypro.banking_service.constants.ConstantsForDynamicRules.TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW;
 
 @Component
-public class TransactionSumCompareDepositWithdrawExecutor implements DimanicQueryExecutor {
+public class TransactionSumCompareDepositWithdrawExecutor implements DynamicQueryExecutor {
 
     private final UserTransactionRepository repository;
 
