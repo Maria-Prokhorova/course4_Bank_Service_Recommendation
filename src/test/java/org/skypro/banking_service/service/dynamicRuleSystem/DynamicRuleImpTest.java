@@ -1,4 +1,4 @@
-package org.skypro.banking_service.serviceQuery;
+package org.skypro.banking_service.service.dynamicRuleSystem;
 
 import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.exception.QueryEvaluationException;

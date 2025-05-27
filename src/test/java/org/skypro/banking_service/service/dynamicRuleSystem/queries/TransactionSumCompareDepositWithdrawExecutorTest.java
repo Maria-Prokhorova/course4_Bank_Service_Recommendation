@@ -1,4 +1,4 @@
-package org.skypro.banking_service.serviceQuery;
+package org.skypro.banking_service.service.dynamicRuleSystem.queries;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

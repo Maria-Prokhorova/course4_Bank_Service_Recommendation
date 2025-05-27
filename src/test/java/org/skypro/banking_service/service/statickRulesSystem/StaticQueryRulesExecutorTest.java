@@ -1,4 +1,4 @@
-package org.skypro.banking_service.serviceTest;
+package org.skypro.banking_service.service.statickRulesSystem;
 
 import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.parameter.StaticRuleParameters;
