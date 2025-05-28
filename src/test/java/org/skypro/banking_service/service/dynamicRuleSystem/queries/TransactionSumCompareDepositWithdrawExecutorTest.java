@@ -1,8 +1,10 @@
 package org.skypro.banking_service.service.dynamicRuleSystem.queries;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.skypro.banking_service.constants.ConstantsForDynamicRules;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.TransactionSumCompareDepositWithdrawExecutor;
@@ -17,12 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.enums.Operator.LT;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class TransactionSumCompareDepositWithdrawExecutorTest {
 
     private static final UUID testUserId = UUID.randomUUID();
     private final String productTypeFirst = "DEBIT";
-    private final Operator operatorTypeSecond = LT;
     private final List<String> listArguments = List.of(productTypeFirst, "<");
 
     @Mock

@@ -2,8 +2,10 @@ package org.skypro.banking_service.service.statistics;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.model.Statistics;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationRepository;
@@ -18,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class MonitoringStatisticsImplTest {
 
     private final Recommendation first = new Recommendation();
