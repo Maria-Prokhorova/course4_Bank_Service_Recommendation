@@ -1,8 +1,10 @@
 package org.skypro.banking_service.service.dynamicRuleSystem.queries;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.TransactionSumCompareExecutor;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class TransactionSumCompareExecutorTest {
 
     private static final UUID testUserId = UUID.randomUUID();
