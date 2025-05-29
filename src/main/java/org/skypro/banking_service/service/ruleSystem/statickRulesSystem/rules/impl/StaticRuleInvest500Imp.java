@@ -1,8 +1,9 @@
-package org.skypro.banking_service.service.ruleSystem.statickRulesSystem.rules;
+package org.skypro.banking_service.service.ruleSystem.statickRulesSystem.rules.impl;
 
 import org.skypro.banking_service.dto.RecommendationDTO;
 import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.parameter.StaticRuleParameters;
-import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.StaticQueryExecutorImpl;
+import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.impl.StaticQueryExecutorImpl;
+import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.rules.StaticRule;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

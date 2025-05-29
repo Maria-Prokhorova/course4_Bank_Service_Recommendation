@@ -1,6 +1,7 @@
-package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries;
+package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.impl;
 
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DynamicQueryExecutor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -10,7 +10,7 @@ import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.model.Statistics;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationRepository;
 import org.skypro.banking_service.repositories.postgres.repository.StatisticsRepository;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.skypro.banking_service.service.statistics.impl.MonitoringStatisticsImpl;
 
 import java.util.ArrayList;
 import java.util.List;

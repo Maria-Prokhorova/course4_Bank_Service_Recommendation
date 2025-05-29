@@ -6,8 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.ActiveUserOfQuery;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.impl.ActiveUserOfQuery;
 
 import java.util.List;
 import java.util.UUID;

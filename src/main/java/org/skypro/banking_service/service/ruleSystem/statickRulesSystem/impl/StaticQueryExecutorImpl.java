@@ -1,7 +1,8 @@
-package org.skypro.banking_service.service.ruleSystem.statickRulesSystem;
+package org.skypro.banking_service.service.ruleSystem.statickRulesSystem.impl;
 
 import org.skypro.banking_service.constants.ConstantsForDynamicRules;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
+import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.StaticQueryExecutor;
 import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.parameter.StaticRuleParameters;
 import org.springframework.stereotype.Service;
 

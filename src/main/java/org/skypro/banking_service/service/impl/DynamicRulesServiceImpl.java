@@ -1,4 +1,4 @@
-package org.skypro.banking_service.service;
+package org.skypro.banking_service.service.impl;
 
 import org.skypro.banking_service.constants.ConstantsForDynamicRules;
 import org.skypro.banking_service.exception.QueryEvaluationException;
@@ -9,6 +9,7 @@ import org.skypro.banking_service.model.Statistics;
 import org.skypro.banking_service.dto.StatisticsDTO;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationRepository;
 import org.skypro.banking_service.repositories.postgres.repository.StatisticsRepository;
+import org.skypro.banking_service.service.DynamicRulesService;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DynamicQueryExecutor;
 import org.skypro.banking_service.service.statistics.MonitoringStatistics;
 import org.slf4j.Logger;

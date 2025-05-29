@@ -1,4 +1,4 @@
-package org.skypro.banking_service.service;
+package org.skypro.banking_service.service.impl;
 
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.model.QueryRules;
@@ -7,6 +7,7 @@ import org.skypro.banking_service.dto.RecommendationDTO;
 import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.repositories.postgres.repository.QueryRepository;
+import org.skypro.banking_service.service.RecommendationForClientService;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DynamicRule;
 import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.rules.StaticRule;
 import org.skypro.banking_service.service.statistics.MonitoringStatistics;

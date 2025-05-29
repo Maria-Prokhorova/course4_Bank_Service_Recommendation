@@ -1,9 +1,10 @@
-package org.skypro.banking_service.service.statistics;
+package org.skypro.banking_service.service.statistics.impl;
 
 import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.model.Statistics;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationRepository;
 import org.skypro.banking_service.repositories.postgres.repository.StatisticsRepository;
+import org.skypro.banking_service.service.statistics.MonitoringStatistics;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
