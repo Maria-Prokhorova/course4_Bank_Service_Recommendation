@@ -120,7 +120,7 @@ public class DynamicRulesServiceImpl implements DynamicRulesService {
     private Recommendation validateProductId(UUID productId) {
         Recommendation recommend = recommendationRepository.findByProductId(productId);
         if (recommend == null) {
-            throw new RecommendationNotFoundException("Рекомендации с таким id не найдены.");
+            throw new RecommendationNotFoundException("Продукт с таким id не найден.");
         }
         return recommend;
     }
