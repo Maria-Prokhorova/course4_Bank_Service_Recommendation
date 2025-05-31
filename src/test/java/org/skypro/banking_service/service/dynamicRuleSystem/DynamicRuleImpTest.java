@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.exception.QueryEvaluationException;
 import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DynamicRuleImp;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.impl.DynamicRuleImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

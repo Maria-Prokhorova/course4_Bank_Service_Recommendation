@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Component
 public class UserTransactionCache {
+    // это кеш.
 
     public final Cache<UUID, List<String>> userTypeProductCache =
             Caffeine.newBuilder()

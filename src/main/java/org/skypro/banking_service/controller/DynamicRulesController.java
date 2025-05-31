@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.skypro.banking_service.exception.RecommendationNotFoundException;
 import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.dto.StatisticsDTO;
 import org.skypro.banking_service.dto.StatisticsResponse;
@@ -40,13 +39,8 @@ public class DynamicRulesController {
             description = "Информация о новом продукте, который хотим добавить в базу.",
             required = true)
                                                   @RequestBody Recommendation recommendation) {
-        try {
-            Recommendation newRecommendation = dynamicRulesService.addProductWithDynamicRule(recommendation);
-            return new ResponseEntity<>(newRecommendation, HttpStatus.OK);
-        } catch (IllegalArgumentException exception) {
-            return new ResponseEntity<>("Новый банковский продукт имеет неверный формат динамического правила. " +
-                    "Проверьте количество запросов (должно быть три), тип запроса, тип продукта, тип транзакции.", HttpStatus.BAD_REQUEST);
-        }
+        Recommendation newRecommendation = dynamicRulesService.addProductWithDynamicRule(recommendation);
+        return new ResponseEntity<>(newRecommendation, HttpStatus.OK);
     }
 
     @Operation(summary = "Удаление из базы данных банковского продукта по его ID.")
@@ -59,12 +53,8 @@ public class DynamicRulesController {
             description = "ID продукта, который хотим удалить из базы.",
             required = true)
                                                   @PathVariable UUID productId) {
-        try {
-            dynamicRulesService.deleteProductWithDynamicRule(productId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RecommendationNotFoundException exception) {
-            return new ResponseEntity<>("Продукт с id = " + productId + " не найден.", HttpStatus.NOT_FOUND);
-        }
+        dynamicRulesService.deleteProductWithDynamicRule(productId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "Получение списка всех банковских продуктов.", description = "В ответе возвращается список " +

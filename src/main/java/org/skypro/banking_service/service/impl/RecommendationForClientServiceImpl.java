@@ -1,4 +1,4 @@
-package org.skypro.banking_service.service;
+package org.skypro.banking_service.service.impl;
 
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.model.QueryRules;
@@ -7,12 +7,15 @@ import org.skypro.banking_service.dto.RecommendationDTO;
 import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.repositories.postgres.repository.QueryRepository;
+import org.skypro.banking_service.service.RecommendationForClientService;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DynamicRule;
 import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.rules.StaticRule;
 import org.skypro.banking_service.service.statistics.MonitoringStatistics;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static org.skypro.banking_service.dto.RecommendationDTO.convertToDto;
 
 /**
  * Сервис реализации рекомендаций клиенту по новым банковским продуктам.
@@ -149,17 +152,5 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
             }
         }
         return true;
-    }
-
-    /**
-     * Внутренний метод, который преобразует сущность {@link Recommendation} в DTO {@link RecommendationDTO}.
-     * Используется для возврата клиенту только нужных данных.
-     */
-    private RecommendationDTO convertToDto(Recommendation recommendation) {
-        return new RecommendationDTO(
-                recommendation.getProductName(),
-                recommendation.getProductId().toString(),
-                recommendation.getProductText()
-        );
     }
 }

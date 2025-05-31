@@ -1,7 +1,8 @@
-package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem;
+package org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.impl;
 
 import org.skypro.banking_service.exception.QueryEvaluationException;
 import org.skypro.banking_service.model.QueryRules;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DynamicRule;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DynamicQueryExecutor;
 import org.springframework.stereotype.Service;
 

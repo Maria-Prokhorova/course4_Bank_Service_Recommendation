@@ -7,9 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.skypro.banking_service.constants.ConstantsForDynamicRules;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.TransactionSumCompareDepositWithdrawExecutor;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.enums.Operator;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.impl.TransactionSumCompareDepositWithdrawExecutor;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +15,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import static org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.enums.Operator.LT;
 
 @ExtendWith(MockitoExtension.class)
 public class TransactionSumCompareDepositWithdrawExecutorTest {
