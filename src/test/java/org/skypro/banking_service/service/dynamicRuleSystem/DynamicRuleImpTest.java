@@ -42,27 +42,29 @@ public class DynamicRuleImpTest {
     );
 
     @Autowired
-    private DynamicRuleImp dimanicRuleImp;
+    private DynamicRuleImp dynamicRuleImp;
 
     @Test
-    void shouldResultOfCheckOutDinamicRuleEvaluationExceptionIfArgumentsNull() {
-        assertThrows(QueryEvaluationException.class, () -> dimanicRuleImp.checkOutDinamicRule(new QueryRules(), null));
+    void shouldResultOfCheckOutDynamicRuleEvaluationExceptionIfArgumentsNull() {
+        assertThrows(QueryEvaluationException.class, () -> dynamicRuleImp.checkOutDinamicRule
+                (new QueryRules(), null));
     }
 
     @Test
-    void shouldResultOfCheckOutDinamicRuleWrong() {
-        assertThrows(QueryEvaluationException.class, () -> dimanicRuleImp.checkOutDinamicRule(wrongQueryRules, testUserId));
+    void shouldResultOfCheckOutDynamicRuleWrong() {
+        assertThrows(QueryEvaluationException.class, () -> dynamicRuleImp.checkOutDinamicRule
+                (wrongQueryRules, testUserId));
     }
 
     @Test
-    void shouldResultOfCheckOutDinamicRuleIsTrue() {
-        boolean ruleQuery = dimanicRuleImp.checkOutDinamicRule(queryRulesTrue, testUserId);
+    void shouldResultOfCheckOutDynamicRuleIsTrue() {
+        boolean ruleQuery = dynamicRuleImp.checkOutDinamicRule(queryRulesTrue, testUserId);
         assertTrue(ruleQuery);
     }
 
     @Test
-    void shouldResultOfCheckOutDinamicRuleIsFalse() {
-        boolean ruleQuery = dimanicRuleImp.checkOutDinamicRule(queryRulesFalse, testUserId);
+    void shouldResultOfCheckOutDynamicRuleIsFalse() {
+        boolean ruleQuery = dynamicRuleImp.checkOutDinamicRule(queryRulesFalse, testUserId);
         assertFalse(ruleQuery);
     }
 }

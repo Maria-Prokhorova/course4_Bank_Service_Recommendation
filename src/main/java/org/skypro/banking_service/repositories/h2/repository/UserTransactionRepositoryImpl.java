@@ -1,8 +1,8 @@
 package org.skypro.banking_service.repositories.h2.repository;
 
-import org.skypro.banking_service.cache.TransactionQueryKey;
-import org.skypro.banking_service.cache.UserProductKey;
-import org.skypro.banking_service.cache.UserTransactionCache;
+import org.skypro.banking_service.cache.impl.UserTransactionCache;
+import org.skypro.banking_service.cache.keys.TransactionQueryKey;
+import org.skypro.banking_service.cache.keys.UserProductKey;
 import org.skypro.banking_service.telegramBot.dto.UserFullName;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -51,7 +51,7 @@ public class UserTransactionRepositoryImpl implements UserTransactionRepository 
     @Override
     public boolean existsUserProductByType(UUID userId, String productType) {
         UserProductKey key = new UserProductKey(userId, productType);
-        return cache.userProductExsistsCache.get(key, k -> {
+        return cache.userProductExistsCache.get(key, k -> {
             String sql = """
                     SELECT COUNT(*) > 0
                     FROM transactions t

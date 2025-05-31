@@ -1,10 +1,11 @@
 package org.skypro.banking_service.service.impl;
 
+import org.skypro.banking_service.cache.impl.RecommendationCache;
+import org.skypro.banking_service.dto.RecommendationDTO;
+import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
-import org.skypro.banking_service.dto.RecommendationDTO;
-import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.repositories.postgres.repository.QueryRepository;
 import org.skypro.banking_service.service.RecommendationForClientService;
@@ -22,13 +23,20 @@ import java.util.*;
 @Service
 public class RecommendationForClientServiceImpl implements RecommendationForClientService {
 
+    private final RecommendationCache cache;
     private final List<StaticRule> staticRules;
     private final DynamicRule dynamicRule;
     private final UserTransactionRepository userTransactionRepository;
     private final QueryRepository queryRepository;
     private final MonitoringStatistics monitoringStatistics;
 
-    public RecommendationForClientServiceImpl(List<StaticRule> staticRules, DynamicRule dynamicRule, UserTransactionRepository userTransactionRepository, QueryRepository queryRepository, MonitoringStatistics monitoringStatistics) {
+    public RecommendationForClientServiceImpl(RecommendationCache cache,
+                                              List<StaticRule> staticRules,
+                                              DynamicRule dynamicRule,
+                                              UserTransactionRepository userTransactionRepository,
+                                              QueryRepository queryRepository,
+                                              MonitoringStatistics monitoringStatistics) {
+        this.cache = cache;
         this.staticRules = staticRules;
         this.dynamicRule = dynamicRule;
         this.userTransactionRepository = userTransactionRepository;
@@ -46,14 +54,15 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
      */
     @Override
     public RecommendationResponse getRecommendationsForClient(UUID userId) {
-        //Валидация данных (проверка id клиента)
-        validateUserExists(userId);
+        return cache.get(userId, id -> {
+            validateUserExists(userId);
 
-        List<RecommendationDTO> result = new ArrayList<>();
-        result.addAll(getStaticRecommendations(userId));
-        result.addAll(getDynamicRecommendations(userId));
+            List<RecommendationDTO> result = new ArrayList<>();
+            result.addAll(getStaticRecommendations(userId));
+            result.addAll(getDynamicRecommendations(userId));
 
-        return new RecommendationResponse(userId, result);
+            return new RecommendationResponse(userId, result);
+        });
     }
 
     /**

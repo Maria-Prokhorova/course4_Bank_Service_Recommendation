@@ -1,4 +1,4 @@
-package org.skypro.banking_service.cache;
+package org.skypro.banking_service.cache.keys;
 
 import java.util.UUID;
 
