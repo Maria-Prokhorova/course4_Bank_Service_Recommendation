@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.skypro.banking_service.dto.RecommendationDTO.convertToDto;
+
 /**
  * Сервис реализации рекомендаций клиенту по новым банковским продуктам.
  * Объединяет статические и динамические правила для определения подходящих продуктов.
@@ -159,17 +161,5 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
             }
         }
         return true;
-    }
-
-    /**
-     * Внутренний метод, который преобразует сущность {@link Recommendation} в DTO {@link RecommendationDTO}.
-     * Используется для возврата клиенту только нужных данных.
-     */
-    private RecommendationDTO convertToDto(Recommendation recommendation) {
-        return new RecommendationDTO(
-                recommendation.getProductName(),
-                recommendation.getProductId().toString(),
-                recommendation.getProductText()
-        );
     }
 }
