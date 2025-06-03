@@ -6,7 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.skypro.banking_service.constants.ConstantsForDynamicRules;
+import org.skypro.banking_service.cache.impl.RecommendationCache;
+import org.skypro.banking_service.cache.impl.StatisticsCache;
 import org.skypro.banking_service.dto.StatisticsDTO;
 import org.skypro.banking_service.exception.RecommendationNotFoundException;
 import org.skypro.banking_service.model.QueryRules;
@@ -14,200 +15,163 @@ import org.skypro.banking_service.model.Recommendation;
 import org.skypro.banking_service.model.Statistics;
 import org.skypro.banking_service.repositories.postgres.repository.RecommendationRepository;
 import org.skypro.banking_service.repositories.postgres.repository.StatisticsRepository;
+import org.skypro.banking_service.service.impl.DynamicRulesServiceImpl;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.queries.DynamicQueryExecutor;
 import org.skypro.banking_service.service.statistics.MonitoringStatistics;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class DynamicRulesServiceImplTest {
+class DynamicRulesServiceImplTest {
 
-    private final Recommendation first = new Recommendation(
-            UUID.randomUUID(),
-            "DEBIT",
-            "text",
-            new HashSet<>(Set.of())
-    );
-
-    private final Recommendation recSecond = new Recommendation(
-            UUID.randomUUID(),
-            "DEBIT",
-            "text",
-            new HashSet<QueryRules>()
-    );
-
-
+    @Mock
+    private StatisticsCache statisticsCache;
+    @Mock
+    private RecommendationCache recommendationCache;
     @Mock
     private RecommendationRepository recommendationRepository;
-
     @Mock
     private StatisticsRepository statisticsRepository;
-
     @Mock
     private MonitoringStatistics monitoringStatistics;
-
     @Mock
-    private DynamicQueryExecutor queryExecutor1;
-
-    @Mock
-    private DynamicQueryExecutor queryExecutor2;
+    private DynamicQueryExecutor executor;
 
     @InjectMocks
     private DynamicRulesServiceImpl service;
 
-    private UUID testProductId;
-    private Recommendation testRecommendation;
-    private List<QueryRules> testQueries;
-    private List<Recommendation> recommendationsList;
+    private Recommendation recommendation;
+    private UUID productId;
+
 
     @BeforeEach
     void setUp() {
-        testProductId = UUID.randomUUID();
+        productId = UUID.randomUUID();
 
-        testRecommendation = new Recommendation();
-        testRecommendation.setProductId(testProductId);
-        testRecommendation.setProductName("Product Name");
-        testRecommendation.setProductText("text");
+        QueryRules q1 = new QueryRules("TRANSACTION_SUM_COMPARE",
+                List.of("CREDIT", "DEPOSIT", "1000", "30"), false, null);
+        QueryRules q2 = new QueryRules("TRANSACTION_SUM_COMPARE",
+                List.of("CREDIT", "WITHDRAW", "1000", "30"), false, null);
+        QueryRules q3 = new QueryRules("TRANSACTION_SUM_COMPARE",
+                List.of("CREDIT", "DEPOSIT", "2000", "30"), false, null);
 
-        testQueries = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            QueryRules query = new QueryRules(
-                    "queryType" + (i+1),
-                    Arrays.asList(
-                            ConstantsForDynamicRules.TypeProduct.CREDIT.name(),
-                            ConstantsForDynamicRules.TypeTransaction.DEPOSIT.name()),
-                    false,
-                    null
-            );
-            testQueries.add(query);
+        recommendation = new Recommendation();
+        recommendation.setProductId(productId);
+        recommendation.setProductName("Product");
+        recommendation.setProductText("Description");
+        recommendation.setQueries(new HashSet<>(List.of(q1, q2, q3)));
 
+        ReflectionTestUtils.setField(service, "executors", List.of(executor));
+    }
 
-            //query.setRecommendation(testRecommendation);
-        }
+    // Тесты для addProductWithDynamicRule
+    @Test
+    void addProductWithDynamicRule_validRecommendation_savesAndInvalidatesCache() {
+        when(executor.checkOutNameQuery(anyString())).thenReturn(true);
+        when(recommendationRepository.save(any())).thenReturn(recommendation);
 
-        testRecommendation.setQueries(new HashSet<>(testQueries));
-
-        List<DynamicQueryExecutor> executors = Arrays.asList(queryExecutor1, queryExecutor2);
         service = new DynamicRulesServiceImpl(
+                statisticsCache,
+                recommendationCache,
                 recommendationRepository,
                 statisticsRepository,
                 monitoringStatistics,
-                executors
+                List.of(executor)
         );
 
-        recommendationsList = List.of(first, recSecond);
-    }
+        Recommendation result = service.addProductWithDynamicRule(recommendation);
 
-    @Test
-    void shouldReturnResultOfAddProductWithDynamicRule_ValidInput_Success() {
-        // Подготовка моков
-        when(queryExecutor1.checkOutNameQuery(anyString())).thenReturn(true);
-        when(recommendationRepository.save(testRecommendation)).thenReturn(testRecommendation);
-
-        // Выполнение метода
-        Recommendation result = service.addProductWithDynamicRule(testRecommendation);
-
-        // Проверка результата
         assertNotNull(result);
-        assertEquals(testProductId, result.getProductId());
+        verify(recommendationRepository).save(recommendation);
+        verify(recommendationCache).invalidateAll();
     }
 
     @Test
-    void shouldReturnResultOfAddProductWithDynamicRule_InvalidCountQuery_ThrowException() {
-        //подготовка, где оставляем только один запрос
-        testRecommendation.setQueries(new HashSet<>(testQueries.subList(0, 1)));
+    void addProductWithDynamicRule_invalidQueryCount_throwsException() {
+        recommendation.setQueries(Set.of(new QueryRules("QUERY", List.of("CREDIT"), false, null)));
 
-        //Проверка выброса исключения
-        assertThrows(IllegalArgumentException.class, () -> service.addProductWithDynamicRule(testRecommendation));
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                service.addProductWithDynamicRule(recommendation)
+        );
+
+        assertEquals("Динамическое правило имеет недопустимое количество запросов.", exception.getMessage());
     }
 
     @Test
-    void shouldReturnResultOfAddProductWithDynamicRule_InvalidProductType_ThrowsException() {
-        testQueries.get(0).setArguments(Arrays.asList("INVALID_TYPE", "PAYMENT", "1000", "30"));
+    void addProductWithDynamicRule_invalidQueryType_throwsException() {
+        QueryRules invalid1 = new QueryRules("UNKNOWN_QUERY",
+                List.of("CREDIT", "DEPOSIT", "1000", "30"), false, null);
+        QueryRules invalid2 = new QueryRules("UNKNOWN_QUERY",
+                List.of("CREDIT", "WITHDRAW", "2000", "30"), false, null);
+        QueryRules invalid3 = new QueryRules("UNKNOWN_QUERY",
+                List.of("DEPOSIT", "CREDIT", "1500", "60"), false, null);
 
-        // Выполнение и проверка
-        assertThrows(IllegalArgumentException.class,
-                () -> service.addProductWithDynamicRule(testRecommendation));
+        recommendation.setQueries(new HashSet<>(List.of(invalid1, invalid2, invalid3)));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                service.addProductWithDynamicRule(recommendation)
+        );
+
+        assertEquals("Тип запроса имеет недопустимое значение.", exception.getMessage());
     }
 
     @Test
-    void shouldReturnResultOfAddProductWithDynamicRule_InvalidQueryType_ThrowsException() {
-        // Подготовка
-        when(queryExecutor1.checkOutNameQuery(anyString())).thenReturn(false);
-        when(queryExecutor2.checkOutNameQuery(anyString())).thenReturn(false);
+    void deleteProductWithDynamicRule_existingProduct_removesFromDbAndInvalidatesCaches() {
+        when(recommendationRepository.findByProductId(productId)).thenReturn(recommendation);
 
-        // Выполнение и проверка
-        assertThrows(IllegalArgumentException.class,
-                () -> service.addProductWithDynamicRule(testRecommendation));
+        service.deleteProductWithDynamicRule(productId);
+
+        verify(recommendationRepository).delete(recommendation);
+        verify(recommendationCache).invalidateAll();
+        verify(statisticsCache).invalidateAll();
+        verify(monitoringStatistics).deleteRuleIdFromStatistics(productId);
     }
 
     @Test
-    void shouldReturnResultOfGetAllRecommendationByRule() {
-        when(recommendationRepository.findAll()).thenReturn(recommendationsList);
-        assertEquals(recommendationsList, service.getAllProductsWithDynamicRule());
-        assertEquals(2, service.getAllProductsWithDynamicRule().size());
+    void deleteProductWithDynamicRule_notFound_throwsException() {
+        when(recommendationRepository.findByProductId(productId)).thenReturn(null);
+
+        assertThrows(RecommendationNotFoundException.class, () ->
+                service.deleteProductWithDynamicRule(productId)
+        );
     }
 
     @Test
-    void shouldReturnResultOfDeleteProductWithDynamicRule_ValidId_Success() {
-        when(recommendationRepository.findByProductId(testProductId)).thenReturn(testRecommendation);
+    void getAllProductsWithDynamicRule_returnsList() {
+        List<Recommendation> recommendations = List.of(recommendation);
+        when(recommendationRepository.findAll()).thenReturn(recommendations);
 
-        service.deleteProductWithDynamicRule(testProductId);
-
-        verify(recommendationRepository).delete(testRecommendation);
-        verify(monitoringStatistics).deleteRuleIdFromStatistics(testProductId);
-    }
-
-    @Test
-    void deleteProductWithDynamicRule_InvalidId_ThrowsException() {
-        when(recommendationRepository.findByProductId(testProductId)).thenReturn(null);
-
-        assertThrows(RecommendationNotFoundException.class,
-                () -> service.deleteProductWithDynamicRule(testProductId));
-    }
-
-    @Test
-    void shouldReturnResultOfGetStatistics_ReturnsCorrectData() {
-        UUID ruleId1 = UUID.randomUUID();
-        UUID ruleId2 = UUID.randomUUID();
-
-        List<UUID> allRuleIds = Arrays.asList(ruleId1, ruleId2);
-        when(monitoringStatistics.getAllRuleIDs()).thenReturn(allRuleIds);
-
-        Statistics stat1 = new Statistics();
-        stat1.setRuleId(ruleId1);
-        stat1.setCount(5L);
-        when(statisticsRepository.findAll()).thenReturn(Collections.singletonList(stat1));
-
-        List<StatisticsDTO> result = service.getStatistics();
-
-        assertEquals(2, result.size());
-
-        Optional<StatisticsDTO> dto1 = result.stream().filter(d -> d.ruleId().equals(ruleId1)).findFirst();
-        assertTrue(dto1.isPresent());
-        assertEquals(5L, dto1.get().count());
-
-        Optional<StatisticsDTO> dto2 = result.stream().filter(d -> d.ruleId().equals(ruleId2)).findFirst();
-        assertTrue(dto2.isPresent());
-        assertEquals(0L, dto2.get().count());
-    }
-
-    @Test
-    void shouldReturnResultOfGetStatistics_NoStatistics_ReturnsZeroCount() {
-        UUID ruleId1 = UUID.randomUUID();
-        when(monitoringStatistics.getAllRuleIDs()).thenReturn(Collections.singletonList(ruleId1));
-        when(statisticsRepository.findAll()).thenReturn(Collections.emptyList());
-
-        List<StatisticsDTO> result = service.getStatistics();
+        List<Recommendation> result = service.getAllProductsWithDynamicRule();
 
         assertEquals(1, result.size());
-        assertEquals(ruleId1, result.get(0).ruleId());
-        assertEquals(0L, result.get(0).count());
+        assertEquals("Product", result.get(0).getProductName());
+    }
+
+    @Test
+    void getStatistics_returnsMergedStatistics() {
+        UUID ruleId = UUID.randomUUID();
+        when(monitoringStatistics.getAllRuleIDs()).thenReturn(List.of(ruleId));
+        when(statisticsRepository.findAll()).thenReturn(List.of(new Statistics(ruleId, 5L)));
+
+        when(statisticsCache.get(anyString(), any()))
+                .thenAnswer(invocation -> {
+                    Supplier<List<StatisticsDTO>> supplier = invocation.getArgument(1);
+                    return supplier.get();
+                });
+        List<StatisticsDTO> result = service.getStatistics();
+        assertEquals(1, result.size());
+        assertEquals(ruleId, result.get(0).ruleId());
+        assertEquals(5L, result.get(0).count());
     }
 
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.skypro.banking_service.exception.QueryEvaluationException;
 import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
-import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DynamicRuleImp;
+import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.impl.DynamicRuleImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -42,27 +42,29 @@ public class DynamicRuleImpTest {
     );
 
     @Autowired
-    private DynamicRuleImp dimanicRuleImp;
+    private DynamicRuleImp dynamicRuleImp;
 
     @Test
-    void shouldResultOfCheckOutDinamicRuleEvaluationExceptionIfArgumentsNull() {
-        assertThrows(QueryEvaluationException.class, () -> dimanicRuleImp.checkOutDinamicRule(new QueryRules(), null));
+    void shouldResultOfCheckOutDynamicRuleEvaluationExceptionIfArgumentsNull() {
+        assertThrows(QueryEvaluationException.class, () -> dynamicRuleImp.checkOutDinamicRule
+                (new QueryRules(), null));
     }
 
     @Test
-    void shouldResultOfCheckOutDinamicRuleWrong() {
-        assertThrows(QueryEvaluationException.class, () -> dimanicRuleImp.checkOutDinamicRule(wrongQueryRules, testUserId));
+    void shouldResultOfCheckOutDynamicRuleWrong() {
+        assertThrows(QueryEvaluationException.class, () -> dynamicRuleImp.checkOutDinamicRule
+                (wrongQueryRules, testUserId));
     }
 
     @Test
-    void shouldResultOfCheckOutDinamicRuleIsTrue() {
-        boolean ruleQuery = dimanicRuleImp.checkOutDinamicRule(queryRulesTrue, testUserId);
+    void shouldResultOfCheckOutDynamicRuleIsTrue() {
+        boolean ruleQuery = dynamicRuleImp.checkOutDinamicRule(queryRulesTrue, testUserId);
         assertTrue(ruleQuery);
     }
 
     @Test
-    void shouldResultOfCheckOutDinamicRuleIsFalse() {
-        boolean ruleQuery = dimanicRuleImp.checkOutDinamicRule(queryRulesFalse, testUserId);
+    void shouldResultOfCheckOutDynamicRuleIsFalse() {
+        boolean ruleQuery = dynamicRuleImp.checkOutDinamicRule(queryRulesFalse, testUserId);
         assertFalse(ruleQuery);
     }
 }

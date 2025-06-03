@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.skypro.banking_service.dto.RecommendationResponse;
-import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.service.RecommendationForClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,11 +39,7 @@ public class RecommendationForClientController {
             description = "ID клиента, для которого хотим подобрать рекомендации банковских продуктов.",
             required = true)
                                                 @PathVariable UUID userId) {
-        try {
-            RecommendationResponse newRecommendation = recommendationForClientService.getRecommendationsForClient(userId);
-            return new ResponseEntity<>(newRecommendation, HttpStatus.OK);
-        } catch (UserNotFoundException exception) {
-            return new ResponseEntity<>("Клиент с id = " + userId + " в базе данных не найден.", HttpStatus.NOT_FOUND);
-        }
+        RecommendationResponse newRecommendation = recommendationForClientService.getRecommendationsForClient(userId);
+        return new ResponseEntity<>(newRecommendation, HttpStatus.OK);
     }
 }

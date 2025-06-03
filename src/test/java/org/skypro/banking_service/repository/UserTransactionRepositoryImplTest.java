@@ -6,9 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.skypro.banking_service.cache.TransactionQueryKey;
-import org.skypro.banking_service.cache.UserProductKey;
-import org.skypro.banking_service.cache.UserTransactionCache;
+import org.skypro.banking_service.cache.impl.UserTransactionCache;
+import org.skypro.banking_service.cache.keys.TransactionQueryKey;
+import org.skypro.banking_service.cache.keys.UserProductKey;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepositoryImpl;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -16,8 +16,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserTransactionRepositoryImplTest {
@@ -60,17 +62,11 @@ class UserTransactionRepositoryImplTest {
 
         // Проверка результата вызова
         assertTrue(firstResult);
-/*        verify(jdbcTemplate).queryForObject(
-                anyString(),
-                eq(Boolean.class),
-                eq(testUserId),
-                eq(productType)
-        );*/
 
         // Проверка, что результат закэшировался
         UserProductKey cacheKey = new UserProductKey(testUserId, productType);
-        assertNotNull(cache.userProductExsistsCache.getIfPresent(cacheKey));
-        assertEquals(Boolean.TRUE, cache.userProductExsistsCache.getIfPresent(cacheKey));
+        assertNotNull(cache.userProductExistsCache.getIfPresent(cacheKey));
+        assertEquals(Boolean.TRUE, cache.userProductExistsCache.getIfPresent(cacheKey));
 
         // Действие - второй вызов (должен взять из кэша)
         boolean secondResult = repository.existsUserProductByType(testUserId, productType);
@@ -96,11 +92,6 @@ class UserTransactionRepositoryImplTest {
 
         // Проверка результата вызова
         assertEquals(expectedTypes, firstResult);
-/*        verify(jdbcTemplate).queryForList(
-                anyString(),
-                eq(String.class),
-                eq(testUserId)
-        );*/
 
         // Проверяем выполнение кэширования
         List<String> result = cache.userTypeProductCache.getIfPresent(testUserId);

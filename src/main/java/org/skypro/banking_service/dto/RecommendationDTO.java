@@ -1,6 +1,7 @@
 package org.skypro.banking_service.dto;
 
 import lombok.Data;
+import org.skypro.banking_service.model.Recommendation;
 
 @Data
 public class RecommendationDTO {
@@ -13,6 +14,18 @@ public class RecommendationDTO {
         this.name = name;
         this.id = id;
         this.text = text;
+    }
+
+    /**
+     * Статический метод, который преобразует сущность {@link Recommendation} в DTO {@link RecommendationDTO}.
+     * Используется для возврата клиенту только нужных данных.
+     */
+    public static RecommendationDTO convertToDto(Recommendation recommendation) {
+        return new RecommendationDTO(
+                recommendation.getProductName(),
+                recommendation.getProductId().toString(),
+                recommendation.getProductText()
+        );
     }
 
 }

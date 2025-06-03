@@ -1,18 +1,22 @@
-package org.skypro.banking_service.service;
+package org.skypro.banking_service.service.impl;
 
+import org.skypro.banking_service.cache.impl.RecommendationCache;
+import org.skypro.banking_service.dto.RecommendationDTO;
+import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.exception.UserNotFoundException;
 import org.skypro.banking_service.model.QueryRules;
 import org.skypro.banking_service.model.Recommendation;
-import org.skypro.banking_service.dto.RecommendationDTO;
-import org.skypro.banking_service.dto.RecommendationResponse;
 import org.skypro.banking_service.repositories.h2.repository.UserTransactionRepository;
 import org.skypro.banking_service.repositories.postgres.repository.QueryRepository;
+import org.skypro.banking_service.service.RecommendationForClientService;
 import org.skypro.banking_service.service.ruleSystem.dynamicRulesSystem.DynamicRule;
 import org.skypro.banking_service.service.ruleSystem.statickRulesSystem.rules.StaticRule;
 import org.skypro.banking_service.service.statistics.MonitoringStatistics;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static org.skypro.banking_service.dto.RecommendationDTO.convertToDto;
 
 /**
  * Сервис реализации рекомендаций клиенту по новым банковским продуктам.
@@ -21,13 +25,20 @@ import java.util.*;
 @Service
 public class RecommendationForClientServiceImpl implements RecommendationForClientService {
 
+    private final RecommendationCache cache;
     private final List<StaticRule> staticRules;
     private final DynamicRule dynamicRule;
     private final UserTransactionRepository userTransactionRepository;
     private final QueryRepository queryRepository;
     private final MonitoringStatistics monitoringStatistics;
 
-    public RecommendationForClientServiceImpl(List<StaticRule> staticRules, DynamicRule dynamicRule, UserTransactionRepository userTransactionRepository, QueryRepository queryRepository, MonitoringStatistics monitoringStatistics) {
+    public RecommendationForClientServiceImpl(RecommendationCache cache,
+                                              List<StaticRule> staticRules,
+                                              DynamicRule dynamicRule,
+                                              UserTransactionRepository userTransactionRepository,
+                                              QueryRepository queryRepository,
+                                              MonitoringStatistics monitoringStatistics) {
+        this.cache = cache;
         this.staticRules = staticRules;
         this.dynamicRule = dynamicRule;
         this.userTransactionRepository = userTransactionRepository;
@@ -45,14 +56,15 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
      */
     @Override
     public RecommendationResponse getRecommendationsForClient(UUID userId) {
-        //Валидация данных (проверка id клиента)
-        validateUserExists(userId);
+        return cache.get(userId, id -> {
+            validateUserExists(userId);
 
-        List<RecommendationDTO> result = new ArrayList<>();
-        result.addAll(getStaticRecommendations(userId));
-        result.addAll(getDynamicRecommendations(userId));
+            List<RecommendationDTO> result = new ArrayList<>();
+            result.addAll(getStaticRecommendations(userId));
+            result.addAll(getDynamicRecommendations(userId));
 
-        return new RecommendationResponse(userId, result);
+            return new RecommendationResponse(userId, result);
+        });
     }
 
     /**
@@ -149,17 +161,5 @@ public class RecommendationForClientServiceImpl implements RecommendationForClie
             }
         }
         return true;
-    }
-
-    /**
-     * Внутренний метод, который преобразует сущность {@link Recommendation} в DTO {@link RecommendationDTO}.
-     * Используется для возврата клиенту только нужных данных.
-     */
-    private RecommendationDTO convertToDto(Recommendation recommendation) {
-        return new RecommendationDTO(
-                recommendation.getProductName(),
-                recommendation.getProductId().toString(),
-                recommendation.getProductText()
-        );
     }
 }
